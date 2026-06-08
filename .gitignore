@@ -1,0 +1,6 @@
+.next
+node_modules
+public/uploads
+.env
+.env.local
+npm-debug.log*
