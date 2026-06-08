@@ -217,6 +217,16 @@ select {
     var(--hero-fade);
   background-size: 32px 32px, 32px 32px, auto, auto;
   pointer-events: none;
+  animation: gridTravel 24s linear infinite;
+}
+
+@keyframes gridTravel {
+  0% {
+    background-position: 0px 0px, 0px 0px, center, center;
+  }
+  100% {
+    background-position: 32px 32px, 32px 32px, center, center;
+  }
 }
 
 .hero-content {
@@ -1313,5 +1323,256 @@ p {
 .certificate-row {
   backdrop-filter: blur(14px) saturate(120%);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+/* Slower, ultra-smooth background fading for body and shell */
+body,
+.site-shell {
+  transition: background-color 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+              color 0.4s ease;
+}
+
+/* Alternating 2-Color Combination Maps - Dark Mode (Default) */
+/* Color Combo 1 (Cyan/Purple): Home, Certificates, Education, Contact */
+:root[data-active-section="home"],
+:root[data-active-section="certificates"],
+:root[data-active-section="education"],
+:root[data-active-section="contact"] {
+  --bg: #050811;
+  --bg-alt: rgba(10, 16, 32, 0.45);
+  --accent: #00f2fe;
+  --accent-2: #9b5de5;
+  --line: rgba(0, 242, 254, 0.09);
+  --card-shadow: 0 10px 30px -15px rgba(0, 242, 254, 0.25);
+}
+
+/* Color Combo 2 (Rose/Orange): Projects, Courses, About */
+:root[data-active-section="projects"],
+:root[data-active-section="courses"],
+:root[data-active-section="about"] {
+  --bg: #0c0406;
+  --bg-alt: rgba(28, 10, 15, 0.45);
+  --accent: #ff007f;
+  --accent-2: #ffb545;
+  --line: rgba(255, 0, 127, 0.09);
+  --card-shadow: 0 10px 30px -15px rgba(255, 0, 127, 0.25);
+}
+
+/* Alternating 2-Color Combination Maps - Light Mode */
+/* Color Combo 1 (Cyan/Purple): Home, Certificates, Education, Contact */
+:root[data-theme="light"][data-active-section="home"],
+:root[data-theme="light"][data-active-section="certificates"],
+:root[data-theme="light"][data-active-section="education"],
+:root[data-theme="light"][data-active-section="contact"] {
+  --bg: #f0f5ff;
+  --bg-alt: rgba(0, 242, 254, 0.05);
+  --accent: #0984e3;
+  --accent-2: #6c5ce7;
+  --line: rgba(9, 132, 227, 0.08);
+  --card-shadow: 0 10px 25px -5px rgba(9, 132, 227, 0.06);
+}
+
+/* Color Combo 2 (Rose/Orange): Projects, Courses, About */
+:root[data-theme="light"][data-active-section="projects"],
+:root[data-theme="light"][data-active-section="courses"],
+:root[data-theme="light"][data-active-section="about"] {
+  --bg: #fff5f7;
+  --bg-alt: rgba(255, 0, 127, 0.05);
+  --accent: #d81b60;
+  --accent-2: #e65100;
+  --line: rgba(216, 27, 96, 0.08);
+  --card-shadow: 0 10px 25px -5px rgba(216, 27, 96, 0.06);
+}
+
+/* Premium Card Active Hover Glow Shadows */
+.content-card:hover,
+.course-card:hover,
+.timeline-content:hover,
+.info-panel:hover,
+.about-image-wrapper:hover,
+.certificate-row:hover {
+  border-color: var(--accent);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 0 25px var(--accent);
+}
+
+/* Sleek Scroll Progress Bar built inside the navigation pill dock */
+.top-nav::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 14px;
+  width: calc(100% - 28px);
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  transform: scaleX(var(--scroll-percent, 0));
+  transform-origin: left;
+  border-radius: 99px;
+  transition: transform 0.1s ease-out, background-color 0.8s ease;
+}
+
+/* Smooth On-Load Intro Animations */
+@keyframes slideDownNav {
+  from { opacity: 0; transform: translate(-50%, -40px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes revealHeroContent {
+  from { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes zoomInCodeWindow {
+  from { opacity: 0; transform: scale(0.9) rotate(2deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.top-nav {
+  animation: slideDownNav 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-content {
+  animation: revealHeroContent 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.code-window {
+  animation: zoomInCodeWindow 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Meaningful Scroll Animations Triggered by data-active-section */
+
+/* 1. Projects: Staggered Slide In with tags sequence */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes staggerTags {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+:root[data-active-section="projects"] #projects .content-card:nth-child(odd) {
+  animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="projects"] #projects .content-card:nth-child(even) {
+  animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="projects"] #projects .content-card:nth-child(1) { animation-delay: 0.1s; }
+:root[data-active-section="projects"] #projects .content-card:nth-child(2) { animation-delay: 0.3s; }
+:root[data-active-section="projects"] #projects .card-tags span {
+  animation: staggerTags 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="projects"] #projects .card-tags span:nth-child(1) { animation-delay: 0.4s; }
+:root[data-active-section="projects"] #projects .card-tags span:nth-child(2) { animation-delay: 0.5s; }
+:root[data-active-section="projects"] #projects .card-tags span:nth-child(3) { animation-delay: 0.6s; }
+:root[data-active-section="projects"] #projects .card-tags span:nth-child(4) { animation-delay: 0.7s; }
+
+/* 2. Certificates: Scale & Translate Expand with rotating icon degrees badge */
+@keyframes certExpand {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes rotateDegreesBadge {
+  from { transform: rotate(-180deg) scale(0.8); }
+  to { transform: rotate(0deg) scale(1); }
+}
+
+:root[data-active-section="certificates"] #certificates .certificate-row {
+  animation: certExpand 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(1) { animation-delay: 0.1s; }
+:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(2) { animation-delay: 0.3s; }
+:root[data-active-section="certificates"] #certificates .badge-icon {
+  animation: rotateDegreesBadge 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(1) .badge-icon { animation-delay: 0.3s; }
+:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(2) .badge-icon { animation-delay: 0.5s; }
+
+/* 3. Courses: Elastic Flip & Pop + Glowing Dot Pulsing */
+@keyframes coursePop {
+  from { opacity: 0; transform: scale(0.85) rotate(-2deg) translateY(18px); }
+  to { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+}
+@keyframes dotPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 var(--accent); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(0, 242, 254, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); }
+}
+
+:root[data-active-section="courses"] #courses .course-card {
+  animation: coursePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+:root[data-active-section="courses"] #courses .course-card:nth-child(1) { animation-delay: 0.1s; }
+:root[data-active-section="courses"] #courses .course-card:nth-child(2) { animation-delay: 0.3s; }
+:root[data-active-section="courses"] #courses .course-dot {
+  animation: dotPulse 2s infinite ease-in-out;
+}
+
+/* 4. Education: Timeline Side Slides + Line Drawing down */
+@keyframes drawTimeline {
+  from { height: 0; }
+  to { height: 100%; }
+}
+@keyframes timelineLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes timelineRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+:root[data-active-section="education"] #education .timeline-line {
+  animation: drawTimeline 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="education"] #education .timeline-item:nth-child(odd) {
+  animation: timelineLeft 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="education"] #education .timeline-item:nth-child(even) {
+  animation: timelineRight 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="education"] #education .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+
+/* 5. About: Zoom Blur Photo & Skills Chips Stagger */
+@keyframes zoomBlur {
+  from { opacity: 0; transform: scale(0.8) rotate(3deg); filter: blur(6px); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
+}
+@keyframes slideUpAbout {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes skillsStagger {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+:root[data-active-section="about"] #about .about-image-wrapper {
+  animation: zoomBlur 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="about"] #about .about-content {
+  animation: slideUpAbout 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="about"] #about .detail-item {
+  animation: skillsStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="about"] #about .detail-item:nth-child(1) { animation-delay: 0.3s; }
+:root[data-active-section="about"] #about .detail-item:nth-child(2) { animation-delay: 0.5s; }
+:root[data-active-section="about"] #about .detail-item:nth-child(3) { animation-delay: 0.7s; }
+
+/* 6. Contact: Split Side Slides */
+@keyframes contactLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes contactRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+:root[data-active-section="contact"] #contact .info-panel {
+  animation: contactLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:root[data-active-section="contact"] #contact .map {
+  animation: contactRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 

@@ -19,6 +19,13 @@ export default function ScrollSectionHandler() {
       });
 
       document.documentElement.setAttribute("data-active-section", currentSection);
+
+      // Track scroll percentage and bind it to a CSS custom variable
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll > 0) {
+        const percent = window.scrollY / maxScroll;
+        document.documentElement.style.setProperty("--scroll-percent", percent);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

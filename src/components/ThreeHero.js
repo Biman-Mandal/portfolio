@@ -39,7 +39,8 @@ export default function ThreeHero() {
     };
 
     // 2. Central Morphing Glass Sphere (Refractive Nucleus)
-    const coreGeometry = new THREE.IcosahedronGeometry(1.2, 4);
+    // Optimization: detail level set to 2 (from 4) to decrease vertex normal calculations by 4x
+    const coreGeometry = new THREE.IcosahedronGeometry(1.2, 2);
     const originalPositions = coreGeometry.attributes.position.array.slice();
 
     const coreMaterial = new THREE.MeshPhysicalMaterial({
@@ -59,7 +60,7 @@ export default function ThreeHero() {
     group.add(core);
 
     // 3. Inner Glowing Sphere
-    const innerGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const innerGeometry = new THREE.SphereGeometry(0.5, 16, 16); // optimized segments
     const innerMaterial = new THREE.MeshBasicMaterial({
       color: 0x18d5b5,
       transparent: true,
@@ -74,12 +75,12 @@ export default function ThreeHero() {
       transparent: true,
       opacity: 0.15
     });
-    const satelliteGeom = new THREE.SphereGeometry(0.05, 16, 16);
+    const satelliteGeom = new THREE.SphereGeometry(0.05, 8, 8); // optimized segments
     const satellites = [];
 
     for (let i = 0; i < 2; i += 1) {
       const radius = 1.8 + i * 0.6;
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.006, 8, 80), ringMaterial);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.006, 6, 60), ringMaterial); // optimized segments
       ring.rotation.x = Math.PI / 2 + (i * 0.2);
       group.add(ring);
 
@@ -121,36 +122,23 @@ export default function ThreeHero() {
     const particleHeights = new Float32Array(particleCount);
     const particleSpeeds = new Float32Array(particleCount);
 
-    // Section colors map matching custom variables in globals.css
-    const sectionColors = {
-      home: {
-        light: [new THREE.Color(0x0f766e), new THREE.Color(0xd97706), new THREE.Color(0x4f46e5)],
-        dark: [new THREE.Color(0x18d5b5), new THREE.Color(0xffb545), new THREE.Color(0xff7ab6)]
+    // Two main alternating color combinations (Cyan/Purple vs Rose/Orange)
+    const colorCombos = {
+      combo1: {
+        light: [new THREE.Color(0x0984e3), new THREE.Color(0x6c5ce7), new THREE.Color(0x00d2ff)],
+        dark: [new THREE.Color(0x00f2fe), new THREE.Color(0x9b5de5), new THREE.Color(0x7f00ff)]
       },
-      projects: {
-        light: [new THREE.Color(0x047857), new THREE.Color(0x0e7490), new THREE.Color(0x0ea5e9)],
-        dark: [new THREE.Color(0x10b981), new THREE.Color(0x06b6d4), new THREE.Color(0x00f2fe)]
-      },
-      certificates: {
-        light: [new THREE.Color(0x7e22ce), new THREE.Color(0xb45309), new THREE.Color(0x4f46e5)],
-        dark: [new THREE.Color(0xa855f7), new THREE.Color(0xfbbf24), new THREE.Color(0xf472b6)]
-      },
-      courses: {
-        light: [new THREE.Color(0x1d4ed8), new THREE.Color(0x0f766e), new THREE.Color(0x0984e3)],
-        dark: [new THREE.Color(0x3b82f6), new THREE.Color(0x14b8a6), new THREE.Color(0x00d2ff)]
-      },
-      education: {
-        light: [new THREE.Color(0xbe123c), new THREE.Color(0xc2410c), new THREE.Color(0xd946ef)],
-        dark: [new THREE.Color(0xf43f5e), new THREE.Color(0xf97316), new THREE.Color(0xff007f)]
-      },
-      about: {
-        light: [new THREE.Color(0x4338ca), new THREE.Color(0xbe185d), new THREE.Color(0x4f46e5)],
-        dark: [new THREE.Color(0x6366f1), new THREE.Color(0xec4899), new THREE.Color(0x9b5de5)]
-      },
-      contact: {
-        light: [new THREE.Color(0xbe123c), new THREE.Color(0x6d28d9), new THREE.Color(0xff4757)],
-        dark: [new THREE.Color(0xf43f5e), new THREE.Color(0x8b5cf6), new THREE.Color(0xff6b81)]
+      combo2: {
+        light: [new THREE.Color(0xd81b60), new THREE.Color(0xe65100), new THREE.Color(0xff8a00)],
+        dark: [new THREE.Color(0xff007f), new THREE.Color(0xffb545), new THREE.Color(0xff5e62)]
       }
+    };
+
+    const getActivePalette = (section, theme) => {
+      // Alternate color combinations: Section 1, 3, 5, 7 use Combo 1. Section 2, 4, 6 use Combo 2.
+      const isCombo1 = ["home", "certificates", "education", "contact"].includes(section);
+      const combo = isCombo1 ? colorCombos.combo1 : colorCombos.combo2;
+      return combo[theme] || combo.dark;
     };
 
     // Initialize state values from the root DOM element
@@ -162,7 +150,7 @@ export default function ThreeHero() {
     }
 
     // Target colors for smooth lerping
-    const activePalette = sectionColors[activeSection]?.[currentTheme] || sectionColors.home.dark;
+    const activePalette = getActivePalette(activeSection, currentTheme);
     const targetColors = {
       innerCore: activePalette[0].clone(),
       light1: activePalette[0].clone(),
@@ -272,11 +260,15 @@ export default function ThreeHero() {
     scene.add(mouseLight);
 
     // 7. Active State & Theme Attribute Observer
+    // Optimization: Throttling color updates. Color buffer is only uploaded to the GPU 
+    // when transitions are active, saving massive GPU cycles per frame.
+    let colorTransitionFrames = 0;
+
     const observer = new MutationObserver(() => {
       const nextTheme = document.documentElement.getAttribute("data-theme") || "dark";
       const nextSection = document.documentElement.getAttribute("data-active-section") || "home";
 
-      const palette = sectionColors[nextSection]?.[nextTheme] || sectionColors.home.dark;
+      const palette = getActivePalette(nextSection, nextTheme);
       
       // Update targets for lights
       targetColors.innerCore.copy(palette[0]);
@@ -288,6 +280,9 @@ export default function ThreeHero() {
       targetColors.palette[0].copy(palette[0]);
       targetColors.palette[1].copy(palette[1]);
       targetColors.palette[2].copy(palette[2]);
+
+      // Trigger 45 frames of active color transitions on scroll/theme toggles
+      colorTransitionFrames = 45;
     });
     
     observer.observe(document.documentElement, {
@@ -329,11 +324,15 @@ export default function ThreeHero() {
 
     // 9. Animation Loop
     let frameId;
+    let introSpinFactor = 8.0; // Fast initial startup spin, decays down to 1.0
     const clock = new THREE.Clock();
 
     const animate = () => {
       const elapsed = clock.getElapsedTime();
       const timeFactor = elapsed * 0.6;
+
+      // Lerp startup spin speed down to normal (Decelerating big bang on load)
+      introSpinFactor += (1.0 - introSpinFactor) * 0.018;
 
       // Mouse smoothing
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
@@ -457,10 +456,10 @@ export default function ThreeHero() {
         const vy = originalPositions[i3 + 1];
         const vz = originalPositions[i3 + 2];
 
-        // Wave formula
-        const wave = Math.sin(vx * (1.5 + scrollPercent * 0.8) + timeFactor) * 
-                     Math.cos(vy * (1.6 + scrollPercent * 0.6) + timeFactor * 0.8) * 
-                     Math.sin(vz * 1.4 - timeFactor * 0.4);
+        // Wave formula scaled by introSpinFactor
+        const wave = Math.sin(vx * (1.5 + scrollPercent * 0.8) + timeFactor * introSpinFactor) * 
+                     Math.cos(vy * (1.6 + scrollPercent * 0.6) + timeFactor * 0.8 * introSpinFactor) * 
+                     Math.sin(vz * 1.4 - timeFactor * 0.4 * introSpinFactor);
 
         const mouseActivity = Math.abs(mouse.targetX - mouse.x) + Math.abs(mouse.targetY - mouse.y);
         const displacement = (coreIntensity + mouseActivity * 0.12 + scrollPercent * 0.1) * wave;
@@ -474,16 +473,17 @@ export default function ThreeHero() {
       coreGeometry.computeVertexNormals();
 
       // Core rotations
-      core.rotation.y = timeFactor * 0.15;
-      core.rotation.z = Math.sin(timeFactor * 0.2) * 0.08;
+      core.rotation.y = timeFactor * 0.15 * introSpinFactor;
+      core.rotation.z = Math.sin(timeFactor * 0.2) * 0.08 * introSpinFactor;
 
-      innerCore.rotation.x = -timeFactor * 0.25;
-      const pulse = 1.0 + Math.sin(timeFactor * 1.8) * 0.06;
+      innerCore.rotation.x = -timeFactor * 0.25 * introSpinFactor;
+      const pulse = 1.0 + Math.sin(timeFactor * 1.8 * introSpinFactor) * 0.06;
       innerCore.scale.set(pulse, pulse, pulse);
 
       // Swirling particles animations & scroll transitions
       const partPos = particlesGeometry.attributes.position.array;
       const partColors = particlesGeometry.attributes.color.array;
+      const runColorUpdate = colorTransitionFrames > 0;
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -491,9 +491,9 @@ export default function ThreeHero() {
         // Dynamic targets calculations per state:
         let tx = 0, ty = 0, tz = 0;
 
-        // 1. GALAXY Target: Swirling angle
+        // 1. GALAXY Target: Swirling angle scaled by introSpinFactor
         const radiusVal = particleRadii[i];
-        particleAngles[i] += particleSpeeds[i]; // continuous orbit spin
+        particleAngles[i] += particleSpeeds[i] * introSpinFactor; // continuous orbit spin
         const galAngle = particleAngles[i];
         const gxGalaxy = Math.cos(galAngle) * radiusVal;
         const gyGalaxy = particleHeights[i];
@@ -501,11 +501,11 @@ export default function ThreeHero() {
 
         // 2. GRID Target: gentle hover/float
         const gxGrid = posGrid[i3];
-        const gyGrid = posGrid[i3 + 1] + Math.sin(timeFactor + posGrid[i3] * 1.5) * 0.06;
+        const gyGrid = posGrid[i3 + 1] + Math.sin(timeFactor * introSpinFactor + posGrid[i3] * 1.5) * 0.06;
         const gzGrid = posGrid[i3 + 2];
 
         // 3. HELIX Target: spin the double helix
-        const hAngle = (i * 0.045) + timeFactor * 0.25;
+        const hAngle = (i * 0.045) + timeFactor * 0.25 * introSpinFactor;
         const isArmA = i % 2 === 0;
         const factor = isArmA ? 1 : -1;
         const hRadius = 1.6;
@@ -516,13 +516,13 @@ export default function ThreeHero() {
         // 4. CYBER WAVE Target: sine wave heights
         const gxWave = posWave[i3];
         const gzWave = posWave[i3 + 2];
-        const gyWave = posWave[i3 + 1] + Math.sin(gxWave * 0.6 + timeFactor * 1.8) * Math.cos(gzWave * 0.6 + timeFactor * 1.2) * 0.45;
+        const gyWave = posWave[i3 + 1] + Math.sin(gxWave * 0.6 + timeFactor * 1.8 * introSpinFactor) * Math.cos(gzWave * 0.6 + timeFactor * 1.2 * introSpinFactor) * 0.45;
 
         // 5. VORTEX Target: very fast spinning
         const vorRadius = Math.sqrt(posVortex[i3] * posVortex[i3] + posVortex[i3 + 2] * posVortex[i3 + 2]);
-        const vorAngle = Math.atan2(posVortex[i3 + 2], posVortex[i3]) + timeFactor * (0.8 + 0.1 / (vorRadius + 0.1));
+        const vorAngle = Math.atan2(posVortex[i3 + 2], posVortex[i3]) + timeFactor * (0.8 + 0.1 / (vorRadius + 0.1)) * introSpinFactor;
         const gxVortex = Math.cos(vorAngle) * vorRadius;
-        const gyVortex = posVortex[i3 + 1] + Math.sin(timeFactor * 2.0 + vorRadius) * 0.04;
+        const gyVortex = posVortex[i3 + 1] + Math.sin(timeFactor * 2.0 * introSpinFactor + vorRadius) * 0.04;
         const gzVortex = Math.sin(vorAngle) * vorRadius;
 
         // Segment interpolation (Galaxy -> Grid -> Helix -> Cyber Wave -> Vortex)
@@ -545,13 +545,15 @@ export default function ThreeHero() {
         }
 
         // Apply mouse physics: repel particles nearby in world space
+        // Optimization: using squared distance comparison (distSq < 4.0) to avoid slow square roots on every frame
         if (mouse.active) {
           const dx = tx - mouseWorld.x;
           const dy = ty - mouseWorld.y;
           const dz = tz - mouseWorld.z;
-          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          const distSq = dx * dx + dy * dy + dz * dz;
           
-          if (dist < 2.0 && dist > 0.01) {
+          if (distSq < 4.0 && distSq > 0.0001) {
+            const dist = Math.sqrt(distSq);
             const repulsionForce = (2.0 - dist) / 2.0; // 0 to 1
             const pushX = (dx / dist) * repulsionForce * 0.9;
             const pushY = (dy / dist) * repulsionForce * 0.9;
@@ -568,23 +570,31 @@ export default function ThreeHero() {
         partPos[i3 + 1] += (ty - partPos[i3 + 1]) * 0.05;
         partPos[i3 + 2] += (tz - partPos[i3 + 2]) * 0.05;
 
-        // Dynamic particle colors lerping (cross-fading colors matching the section)
-        const baseColor = targetColors.palette[i % 3].clone();
-        baseColor.lerp(new THREE.Color(0xffffff), Math.max(0, 1.0 - radiusVal / 3.0) * 0.5);
+        // Dynamic particle colors lerping (Throttled optimization)
+        if (runColorUpdate) {
+          const baseColor = targetColors.palette[i % 3].clone();
+          baseColor.lerp(new THREE.Color(0xffffff), Math.max(0, 1.0 - radiusVal / 3.0) * 0.5);
 
-        partColors[i3] += (baseColor.r - partColors[i3]) * 0.04;
-        partColors[i3 + 1] += (baseColor.g - partColors[i3 + 1]) * 0.04;
-        partColors[i3 + 2] += (baseColor.b - partColors[i3 + 2]) * 0.04;
+          partColors[i3] += (baseColor.r - partColors[i3]) * 0.04;
+          partColors[i3 + 1] += (baseColor.g - partColors[i3 + 1]) * 0.04;
+          partColors[i3 + 2] += (baseColor.b - partColors[i3 + 2]) * 0.04;
+        }
       }
+      
       particlesGeometry.attributes.position.needsUpdate = true;
-      particlesGeometry.attributes.color.needsUpdate = true;
+      
+      // Throttle colors buffer upload to GPU (only uploads when scroll/theme is actively changing)
+      if (runColorUpdate) {
+        particlesGeometry.attributes.color.needsUpdate = true;
+        colorTransitionFrames--;
+      }
 
       // Subtle rotation of entire galaxy Points mesh
-      galaxyParticles.rotation.y = timeFactor * 0.02;
+      galaxyParticles.rotation.y = timeFactor * 0.02 * introSpinFactor;
 
       // Update orbits
       satellites.forEach((sat) => {
-        sat.angle += sat.speed * 0.012;
+        sat.angle += sat.speed * 0.012 * introSpinFactor;
         sat.mesh.position.set(
           Math.cos(sat.angle) * sat.radius,
           Math.sin(sat.angle * 0.5) * 0.15,
