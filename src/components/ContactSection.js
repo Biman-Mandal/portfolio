@@ -1,3 +1,4 @@
+"use client";
 export default function ContactSection({ contact }) {
   if (!contact) return null;
 
@@ -29,7 +30,7 @@ export default function ContactSection({ contact }) {
           </a>
         )}
         {contact.whatsapp && (
-          <a href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`} title="WhatsApp" className="icon-link" style={{ color: '#fff', animation: 'pulse 2s infinite' }}>
+          <a href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`} title="WhatsApp" className="icon-link" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', animation: 'pulse 2s infinite' }}>
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
               <path d="M20.52 3.48A11.94 11.94 0 0012 0C5.37 0 0 5.37 0 12c0 2.12.55 4.13 1.5 5.87L0 24l6.32-1.65A11.93 11.93 0 0012 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.09-3.48-8.52zM12 22c-1.94 0-3.81-.51-5.44-1.41l-.39-.23-3.76 1 1-3.68-.25-.42A9.96 9.96 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10z" />
               <path d="M17.14 14.86l-2.29-.57c-.26-.07-.53.03-.68.24l-.95 1.33c-2.35-1.21-4.09-2.95-5.31-5.31l1.33-.95c.21-.15.31-.42.24-.68l-.57-2.29c-.09-.38-.44-.63-.82-.57-2.11.36-3.66 2.35-3.66 4.5 0 2.53 2.05 4.58 4.58 4.58 2.15 0 4.13-1.55 4.5-3.66.06-.38-.19-.73-.57-.82z" />
