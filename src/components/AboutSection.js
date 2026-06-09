@@ -55,6 +55,21 @@ export default function AboutSection({ id, title, description, certificates = []
             <h2>{title}</h2>
           </div>
           <p className="about-copy">{aboutDescription}</p>
+          <ul className="about-details" role="list" style={{display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginTop: '2rem'}}>
+            {[
+              {icon: '⚡', title: 'Fast Engineering', description: 'Clean Next.js architecture with zero unnecessary bloat.'},
+              {icon: '🎨', title: 'Interactive WebGL', description: 'Creating immersive experiences with custom Three.js visuals.'},
+              {icon: '🛡️', title: 'Safe & Production-Ready', description: 'Database safety, secure environments, and robust codebases.'}
+            ].map((item, idx) => (
+              <li key={idx} className="detail-item" style={{display: 'flex', alignItems: 'flex-start', gap: '0.75rem'}}>
+                <span className="detail-icon" aria-hidden="true" style={{fontSize: '1.5rem'}}>{item.icon}</span>
+                <div>
+                  <h4 style={{margin: 0, fontSize: '1.1rem', fontWeight: 700}}>{item.title}</h4>
+                  <p style={{margin: '0.25rem 0 0', fontSize: '0.95rem', color: 'var(--muted)'}}>{item.description}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
           
           
         </div>
