@@ -7,6 +7,10 @@ export default function ThreeHero() {
   const mountRef = useRef(null);
 
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
+    if (isMobile) {
+      return;
+    }
     const mount = mountRef.current;
     if (!mount) return;
 
@@ -39,20 +43,17 @@ export default function ThreeHero() {
     };
 
     // 2. Central Morphing Glass Sphere (Refractive Nucleus)
-    // Optimization: detail level set to 2 (from 4) to decrease vertex normal calculations by 4x
     const coreGeometry = new THREE.IcosahedronGeometry(1.2, 2);
     const originalPositions = coreGeometry.attributes.position.array.slice();
 
     const coreMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      roughness: 0.08,
-      metalness: 0.1,
-      transmission: 0.95,
-      ior: 1.5,
-      thickness: 1.8,
+      color: 0xe0f2fe,
+      roughness: 0.1,
+      metalness: 0.2,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
       transparent: true,
+      opacity: 0.55,
       side: THREE.DoubleSide
     });
 
@@ -60,9 +61,9 @@ export default function ThreeHero() {
     group.add(core);
 
     // 3. Inner Glowing Sphere
-    const innerGeometry = new THREE.SphereGeometry(0.5, 16, 16); // optimized segments
+    const innerGeometry = new THREE.SphereGeometry(0.5, 16, 16);
     const innerMaterial = new THREE.MeshBasicMaterial({
-      color: 0x18d5b5,
+      color: 0x1d4ed8,
       transparent: true,
       opacity: 0.85
     });
@@ -75,17 +76,17 @@ export default function ThreeHero() {
       transparent: true,
       opacity: 0.15
     });
-    const satelliteGeom = new THREE.SphereGeometry(0.05, 8, 8); // optimized segments
+    const satelliteGeom = new THREE.SphereGeometry(0.05, 8, 8);
     const satellites = [];
 
-    for (let i = 0; i < 2; i += 1) {
+    for (let i = 0; i < 3; i++) {
       const radius = 1.8 + i * 0.6;
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.006, 6, 60), ringMaterial); // optimized segments
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.006, 6, 60), ringMaterial);
       ring.rotation.x = Math.PI / 2 + (i * 0.2);
       group.add(ring);
 
       const satMat = new THREE.MeshBasicMaterial({
-        color: 0xffb545,
+        color: 0xeab308,
         transparent: true,
         opacity: 0.8
       });
@@ -101,8 +102,9 @@ export default function ThreeHero() {
       });
     }
 
-    // 5. Scroll-linked Morphing Formations (2000 Particles)
-    const particleCount = 2000;
+    // 5. Scroll-linked Morphing Formations (600 Particles)
+    const particleCount = 600; 
+
     const particlesGeometry = new THREE.BufferGeometry();
     
     // Arrays for active particle rendering attributes
@@ -110,46 +112,48 @@ export default function ThreeHero() {
     const colors = new Float32Array(particleCount * 3);
 
     // Precomputed formations coordinate arrays
-    const posGalaxy = new Float32Array(particleCount * 3);
     const posGrid = new Float32Array(particleCount * 3);
     const posHelix = new Float32Array(particleCount * 3);
-    const posWave = new Float32Array(particleCount * 3);
-    const posVortex = new Float32Array(particleCount * 3);
+    const posHelixAngle = new Float32Array(particleCount);
+    
+    // Vortex parameter caches (reused for Stage 4 Digital Rain)
+    const posVortexRadius = new Float32Array(particleCount);
+    const posVortexAngle = new Float32Array(particleCount);
+    const posVortexY = new Float32Array(particleCount);
 
-    // Mathematical rotation speed and angle variables for individual particles
+    // Cyber Data Tunnel parameter caches (Stage 3)
+    const posTunnelAngle = new Float32Array(particleCount);
+    const posTunnelRadius = new Float32Array(particleCount);
+    const posTunnelZ = new Float32Array(particleCount);
+
+    // Gyroscope HUD parameters (Stage 0)
     const particleAngles = new Float32Array(particleCount);
     const particleRadii = new Float32Array(particleCount);
-    const particleHeights = new Float32Array(particleCount);
-    const particleSpeeds = new Float32Array(particleCount);
 
-    // Two main alternating color combinations (Cyan/Purple vs Rose/Orange)
+    // Professional Steel Teal/Blue vs Slate Indigo/Gold color combinations
     const colorCombos = {
       combo1: {
-        light: [new THREE.Color(0x0984e3), new THREE.Color(0x6c5ce7), new THREE.Color(0x00d2ff)],
-        dark: [new THREE.Color(0x00f2fe), new THREE.Color(0x9b5de5), new THREE.Color(0x7f00ff)]
+        light: [new THREE.Color(0x0f766e), new THREE.Color(0x1d4ed8), new THREE.Color(0x0284c7)],
+        dark: [new THREE.Color(0x14b8a6), new THREE.Color(0x3b82f6), new THREE.Color(0x0ea5e9)]
       },
       combo2: {
-        light: [new THREE.Color(0xd81b60), new THREE.Color(0xe65100), new THREE.Color(0xff8a00)],
-        dark: [new THREE.Color(0xff007f), new THREE.Color(0xffb545), new THREE.Color(0xff5e62)]
+        light: [new THREE.Color(0x4338ca), new THREE.Color(0xb45309), new THREE.Color(0x1e3a8a)],
+        dark: [new THREE.Color(0x6366f1), new THREE.Color(0xfbbf24), new THREE.Color(0x4f46e5)]
       }
     };
 
     const getActivePalette = (section, theme) => {
-      // Alternate color combinations: Section 1, 3, 5, 7 use Combo 1. Section 2, 4, 6 use Combo 2.
       const isCombo1 = ["home", "certificates", "education", "contact"].includes(section);
       const combo = isCombo1 ? colorCombos.combo1 : colorCombos.combo2;
       return combo[theme] || combo.dark;
     };
 
-    // Initialize state values from the root DOM element
-    let currentTheme = "dark";
+    let currentTheme = "light";
     let activeSection = "home";
     if (typeof window !== "undefined") {
-      currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
       activeSection = document.documentElement.getAttribute("data-active-section") || "home";
     }
 
-    // Target colors for smooth lerping
     const activePalette = getActivePalette(activeSection, currentTheme);
     const targetColors = {
       innerCore: activePalette[0].clone(),
@@ -163,64 +167,64 @@ export default function ThreeHero() {
       ]
     };
 
-    // Precalculate coordinates for all five mathematical formations
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
-
-      // Spin variables used for Galaxy and Vortex states
-      const r = Math.pow(Math.random(), 1.6) * 6.5 + 0.3;
-      const armAngle = (i % 3) * (2 * Math.PI / 3);
-      const angle = armAngle + r * 0.75 + (Math.random() - 0.5) * 0.2;
-      const h = (Math.random() - 0.5) * 0.35 * (7.0 - r);
-
+      
+      // 1. Gyroscope HUD parameters (Stage 0)
+      const ringIndex = i % 3;
+      const r = 1.8 + ringIndex * 0.6 + (Math.random() - 0.5) * 0.15;
+      const angle = Math.random() * Math.PI * 2;
       particleRadii[i] = r;
       particleAngles[i] = angle;
-      particleHeights[i] = h;
-      particleSpeeds[i] = 0.08 / (r + 0.3); // Spin speed decays outward
 
-      // 1. GALAXY FORMATION
-      posGalaxy[i3] = Math.cos(angle) * r;
-      posGalaxy[i3 + 1] = h;
-      posGalaxy[i3 + 2] = Math.sin(angle) * r;
+      // 2. Data Streams parameters (Stage 1)
+      const level = (i % 6) - 2.5;
+      const streamX = ((i / 6) % 100 - 50) * 0.12;
+      posGrid[i3] = streamX;
+      posGrid[i3 + 1] = level * 0.8 + (Math.random() - 0.5) * 0.05;
+      posGrid[i3 + 2] = (Math.random() - 0.5) * 1.5;
 
-      // 2. GRID FORMATION (Mainframe Cube Nodes)
-      const gx = (i % 12) - 5.5;
-      const gy = (Math.floor(i / 12) % 12) - 5.5;
-      const gz = (Math.floor(i / 144) % 14) - 6.5;
-      posGrid[i3] = gx * 0.45 + (Math.random() - 0.5) * 0.08;
-      posGrid[i3 + 1] = gy * 0.45 + (Math.random() - 0.5) * 0.08;
-      posGrid[i3 + 2] = gz * 0.45 + (Math.random() - 0.5) * 0.08;
-
-      // 3. DNA HELIX FORMATION
-      const helixAngle = i * 0.045;
-      const isArmA = i % 2 === 0;
+      // 3. Helix coordinates (Stage 2)
+      const helixAngle = (i / particleCount) * Math.PI * 8; // 4 full turns
+      posHelixAngle[i] = helixAngle;
+      const isArmA = (i % 2 === 0);
       const factor = isArmA ? 1 : -1;
-      const radius = 1.6;
-      posHelix[i3] = Math.cos(helixAngle) * radius * factor + (Math.random() - 0.5) * 0.1;
-      posHelix[i3 + 1] = (i / particleCount - 0.5) * 7.5 + (Math.random() - 0.5) * 0.05;
-      posHelix[i3 + 2] = Math.sin(helixAngle) * radius * factor + (Math.random() - 0.5) * 0.1;
+      const hRadius = 1.6 + (Math.random() - 0.5) * 0.1;
+      posHelix[i3] = Math.cos(helixAngle) * hRadius * factor;
+      posHelix[i3 + 1] = (i / particleCount - 0.5) * 6.5;
+      posHelix[i3 + 2] = Math.sin(helixAngle) * hRadius * factor;
 
-      // 4. CYBER WAVE FORMATION (Mesh grid plane)
-      const gridWidth = 50;
-      const col = i % gridWidth;
-      const row = Math.floor(i / gridWidth);
-      posWave[i3] = (col - 24.5) * 0.24 + (Math.random() - 0.5) * 0.04;
-      posWave[i3 + 1] = -1.2; // base flat plane
-      posWave[i3 + 2] = (row - 19.5) * 0.24 + (Math.random() - 0.5) * 0.04;
+      // 4. Cyber Data Tunnel parameters (Stage 3)
+      const ringGroup = i % 8; // 8 segments along Z
+      const tunnelZ = (ringGroup - 3.5) * 1.2;
+      const tunnelAngle = (i / particleCount) * Math.PI * 2 * (particleCount / 8);
+      const tunnelRadius = 2.2 + (Math.random() - 0.5) * 0.15;
+      posTunnelAngle[i] = tunnelAngle;
+      posTunnelRadius[i] = tunnelRadius;
+      posTunnelZ[i] = tunnelZ;
 
-      // 5. VORTEX FORMATION (Swirling wormhole ring)
-      const vr = Math.pow(Math.random(), 0.5) * 3.5 + 0.2;
+      // 5. Digital Rain parameters (Stage 4)
+      const vr = Math.sqrt(Math.random()) * 3.5 + 0.3;
       const vAngle = Math.random() * Math.PI * 2;
-      posVortex[i3] = Math.cos(vAngle) * vr;
-      posVortex[i3 + 1] = (Math.random() - 0.5) * 0.12 * (3.8 - vr);
-      posVortex[i3 + 2] = Math.sin(vAngle) * vr;
+      posVortexRadius[i] = vr;
+      posVortexAngle[i] = vAngle;
+      posVortexY[i] = (Math.random() - 0.5) * 6.0;
 
-      // Initialize active points at Galaxy formation
-      activePositions[i3] = posGalaxy[i3];
-      activePositions[i3 + 1] = posGalaxy[i3 + 1];
-      activePositions[i3 + 2] = posGalaxy[i3 + 2];
+      // Initial active positions (Gyroscope HUD rings on X-Z, Y-Z, X-Y planes)
+      if (ringIndex === 0) {
+        activePositions[i3] = Math.cos(angle) * r;
+        activePositions[i3 + 1] = 0;
+        activePositions[i3 + 2] = Math.sin(angle) * r;
+      } else if (ringIndex === 1) {
+        activePositions[i3] = 0;
+        activePositions[i3 + 1] = Math.cos(angle) * r;
+        activePositions[i3 + 2] = Math.sin(angle) * r;
+      } else {
+        activePositions[i3] = Math.cos(angle) * r;
+        activePositions[i3 + 1] = Math.sin(angle) * r;
+        activePositions[i3 + 2] = 0;
+      }
 
-      // Set initial colors
       const colVal = activePalette[i % 3].clone();
       colVal.lerp(new THREE.Color(0xffffff), Math.max(0, 1.0 - r / 3.0) * 0.5);
       colors[i3] = colVal.r;
@@ -232,7 +236,7 @@ export default function ThreeHero() {
     particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.14, // Slightly larger for stellar soft glow blending
+      size: 0.14,
       map: createParticleTexture(),
       vertexColors: true,
       transparent: true,
@@ -244,74 +248,91 @@ export default function ThreeHero() {
     const galaxyParticles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(galaxyParticles);
 
-    // 6. Lights
     scene.add(new THREE.AmbientLight(0xffffff, 0.25));
-
-    const light1 = new THREE.PointLight(activePalette[0], 10, 25);
+    const light1 = new THREE.PointLight(activePalette[0], 15, 25);
     light1.position.set(5, 5, 5);
     scene.add(light1);
-
-    const light2 = new THREE.PointLight(activePalette[1], 8, 20);
+    const light2 = new THREE.PointLight(activePalette[1], 12, 20);
     light2.position.set(-5, -3, 4);
     scene.add(light2);
-
-    const mouseLight = new THREE.PointLight(activePalette[2], 6, 12);
+    const mouseLight = new THREE.PointLight(activePalette[2], 10, 12);
     mouseLight.position.set(0, 0, 3);
     scene.add(mouseLight);
 
-    // 7. Active State & Theme Attribute Observer
-    // Optimization: Throttling color updates. Color buffer is only uploaded to the GPU 
-    // when transitions are active, saving massive GPU cycles per frame.
     let colorTransitionFrames = 0;
-
     const observer = new MutationObserver(() => {
-      const nextTheme = document.documentElement.getAttribute("data-theme") || "dark";
       const nextSection = document.documentElement.getAttribute("data-active-section") || "home";
-
-      const palette = getActivePalette(nextSection, nextTheme);
-      
-      // Update targets for lights
+      const palette = getActivePalette(nextSection, "light");
       targetColors.innerCore.copy(palette[0]);
       targetColors.light1.copy(palette[0]);
       targetColors.light2.copy(palette[1]);
       targetColors.light3.copy(palette[2]);
-
-      // Update targets for particles palette
       targetColors.palette[0].copy(palette[0]);
       targetColors.palette[1].copy(palette[1]);
       targetColors.palette[2].copy(palette[2]);
-
-      // Trigger 45 frames of active color transitions on scroll/theme toggles
       colorTransitionFrames = 45;
     });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme", "data-active-section"]
-    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-active-section"] });
 
-    // 8. Interaction & Scroll Event Listeners
+    let frameId;
+    let introSpinFactor = 8.0;
+    let frameCount = 0;
+    const clock = new THREE.Clock();
+
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
-    const onMouseMove = (event) => {
-      mouse.targetX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.targetY = -(event.clientY / window.innerHeight) * 2 + 1;
+    const onMouseMove = (e) => {
+      mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
       mouse.active = true;
     };
     window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", () => { mouse.active = false; });
 
-    const onMouseLeave = () => {
-      mouse.active = false;
+    // Caching window and document dimensions for reflow-free scroll computations
+    let viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+    let documentHeight = typeof document !== "undefined" ? document.documentElement.scrollHeight : 0;
+    let maxScroll = documentHeight - viewportHeight;
+
+    const updateHeights = () => {
+      viewportHeight = window.innerHeight;
+      documentHeight = document.documentElement.scrollHeight;
+      maxScroll = documentHeight - viewportHeight;
     };
-    window.addEventListener("mouseleave", onMouseLeave);
 
     let scrollPercent = 0;
+    let maxScrollPercent = 0;
     const onScroll = () => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (maxScroll > 0) {
         scrollPercent = window.scrollY / maxScroll;
+        if (scrollPercent > maxScrollPercent) {
+          maxScrollPercent = scrollPercent;
+        }
       }
     };
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    if (typeof window !== "undefined") {
+      if (!window.location.hash) {
+        if ("scrollRestoration" in window.history) {
+          window.history.scrollRestoration = "manual";
+        }
+        window.scrollTo(0, 0);
+      } else {
+        if ("scrollRestoration" in window.history) {
+          window.history.scrollRestoration = "auto";
+        }
+      }
+    }
+
+    let isCanvasVisible = true;
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      isCanvasVisible = entry.isIntersecting;
+      if (isCanvasVisible && !frameId) {
+        animate();
+      }
+    }, { threshold: 0.05 });
+    visibilityObserver.observe(mount);
 
     const resize = () => {
       const width = mount.clientWidth;
@@ -319,26 +340,27 @@ export default function ThreeHero() {
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      updateHeights();
+      onScroll();
     };
     window.addEventListener("resize", resize);
 
-    // 9. Animation Loop
-    let frameId;
-    let introSpinFactor = 8.0; // Fast initial startup spin, decays down to 1.0
-    const clock = new THREE.Clock();
+    // Make an initial update to cache the dimensions and sync the scroll progress properly
+    updateHeights();
+    onScroll();
 
     const animate = () => {
+      if (!isCanvasVisible) {
+        frameId = null;
+        return;
+      }
+      frameCount++;
       const elapsed = clock.getElapsedTime();
       const timeFactor = elapsed * 0.6;
-
-      // Lerp startup spin speed down to normal (Decelerating big bang on load)
       introSpinFactor += (1.0 - introSpinFactor) * 0.018;
-
-      // Mouse smoothing
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
-      // Project mouse screen coordinates into 3D world space on the z=0 plane
       const mouseWorld = new THREE.Vector3();
       if (mouse.active) {
         const tempV = new THREE.Vector3(mouse.x, mouse.y, 0.5);
@@ -348,249 +370,22 @@ export default function ThreeHero() {
         mouseWorld.copy(camera.position).add(dir.multiplyScalar(distToPlane));
       }
 
-      // Scroll segments calculations (mapping scrollPercent 0.0-1.0 to 5 states)
-      const t = Math.max(0, Math.min(4, scrollPercent * 4));
+      const t = Math.max(0, Math.min(4, maxScrollPercent * 4));
       const activeStage = Math.floor(t);
       const stageProgress = t - activeStage;
 
-      // Camera Cinematic Swooping Path (Parallax & Depth Flight)
-      let targetCamX = 0;
-      let targetCamY = 3.5;
-      let targetCamZ = 8.5;
-      let lookAtY = 0;
+      camera.position.x += ( (t < 2 ? mouse.x * 1.5 : (t < 3 ? mouse.x * 1.5 + (t-2)*2 : 0)) - camera.position.x) * 0.05;
+      camera.lookAt(0, (t < 1 ? stageProgress * 0.3 : (t < 2 ? 0.3 - 0.3*(t-1) : (t < 3 ? (t-2)*-0.5 : -0.5 + (t-3)*1.0))), 0);
 
-      if (t < 1) {
-        // Hero to Projects (Galaxy -> Grid)
-        targetCamX = mouse.x * 1.5;
-        targetCamY = 3.5 - (3.5 - 1.5) * stageProgress;
-        targetCamZ = 8.5 - (8.5 - 7.0) * stageProgress;
-        lookAtY = stageProgress * 0.3;
-      } else if (t < 2) {
-        // Projects to Certificates (Grid -> DNA Helix)
-        const p = t - 1;
-        targetCamX = mouse.x * 1.5;
-        targetCamY = 1.5 - 1.5 * p;
-        targetCamZ = 7.0 + 1.0 * p;
-        lookAtY = 0.3 - 0.3 * p;
-      } else if (t < 3) {
-        // Certificates to Courses/Education (DNA Helix -> Cyber Wave)
-        const p = t - 2;
-        targetCamX = mouse.x * 1.5 + p * 2.0;
-        targetCamY = p * 4.0;
-        targetCamZ = 8.0 - 0.5 * p;
-        lookAtY = p * -0.5;
-      } else {
-        // Courses/Education to Contact (Cyber Wave -> Vortex wormhole plunge)
-        const p = t - 3;
-        targetCamX = (mouse.x * 1.5 + 2.0) * (1 - p);
-        targetCamY = 4.0 - 3.5 * p;
-        targetCamZ = 7.5 - 3.0 * p;
-        lookAtY = -0.5 + 1.0 * p;
-      }
-
-      camera.position.x += (targetCamX - camera.position.x) * 0.05;
-      camera.position.y += (targetCamY - camera.position.y) * 0.05;
-      camera.position.z += (targetCamZ - camera.position.z) * 0.05;
-      camera.lookAt(0, lookAtY, 0);
-
-      // Core Glass Sphere dynamic position, scale, and morphing details based on scroll
-      let coreTargetX = window.innerWidth < 800 ? 0.0 : 2.2;
-      let coreTargetY = 0.0;
-      let coreTargetZ = 0.0;
-      let coreTargetScale = 1.0;
-      let coreIntensity = 0.22;
-
-      if (t < 1) {
-        // Hero to Projects (Shift left, scale down)
-        const baseOffsetX = window.innerWidth < 800 ? 0.0 : 2.2;
-        const targetX = baseOffsetX - stageProgress * (window.innerWidth < 800 ? 1.5 : 4.8);
-        coreTargetX = targetX;
-        coreTargetY = -stageProgress * 0.4;
-        coreTargetScale = 1.0 - stageProgress * 0.45;
-        coreIntensity = 0.22 + stageProgress * 0.06;
-      } else if (t < 2) {
-        // Projects to Certificates (Shift right, scale up slightly)
-        const p = t - 1;
-        const startX = window.innerWidth < 800 ? -1.5 : -2.6;
-        const endX = window.innerWidth < 800 ? 1.0 : 2.0;
-        coreTargetX = startX + (endX - startX) * p;
-        coreTargetY = -0.4 + 0.8 * p;
-        coreTargetScale = 0.55 + 0.15 * p;
-        coreIntensity = 0.28 - 0.08 * p;
-      } else if (t < 3) {
-        // Certificates to Courses/Education (Shift left, scale down)
-        const p = t - 2;
-        const startX = window.innerWidth < 800 ? 1.0 : 2.0;
-        const endX = window.innerWidth < 800 ? -1.2 : -2.2;
-        coreTargetX = startX + (endX - startX) * p;
-        coreTargetY = 0.4 - 1.2 * p;
-        coreTargetScale = 0.7 - 0.2 * p;
-        coreIntensity = 0.20 + p * 0.1;
-      } else {
-        // Courses/Education to Contact (Shift to center, scale up for Vortex)
-        const p = t - 3;
-        const startX = window.innerWidth < 800 ? -1.2 : -2.2;
-        coreTargetX = startX * (1 - p);
-        coreTargetY = -0.8 + 0.8 * p;
-        coreTargetScale = 0.5 + 0.7 * p;
-        coreIntensity = 0.30 + p * 0.25;
-      }
-
-      group.position.x += (coreTargetX - group.position.x) * 0.05;
-      group.position.y += (coreTargetY - group.position.y) * 0.05;
-      group.position.z += (coreTargetZ - group.position.z) * 0.05;
-
-      const scaleVal = core.scale.x + (coreTargetScale - core.scale.x) * 0.05;
+      group.position.x += ( (t < 1 ? (window.innerWidth < 800 ? 0 : 2.2) - stageProgress * (window.innerWidth < 800 ? 1.5 : 4.8) : 0) - group.position.x) * 0.05;
+      
+      const scaleVal = core.scale.x + ((t < 1 ? 1.0 - stageProgress * 0.45 : (t < 2 ? 0.55 + 0.15*(t-1) : 0.5)) - core.scale.x) * 0.05;
       core.scale.set(scaleVal, scaleVal, scaleVal);
 
-      // Cursor light tracking
-      mouseLight.position.x = mouse.x * 6;
-      mouseLight.position.y = mouse.y * 5;
-
-      // Central morphing glass sphere vertex displacement
-      const corePos = coreGeometry.attributes.position.array;
-      const coreCount = coreGeometry.attributes.position.count;
-      for (let i = 0; i < coreCount; i++) {
-        const i3 = i * 3;
-        const vx = originalPositions[i3];
-        const vy = originalPositions[i3 + 1];
-        const vz = originalPositions[i3 + 2];
-
-        // Wave formula scaled by introSpinFactor
-        const wave = Math.sin(vx * (1.5 + scrollPercent * 0.8) + timeFactor * introSpinFactor) * 
-                     Math.cos(vy * (1.6 + scrollPercent * 0.6) + timeFactor * 0.8 * introSpinFactor) * 
-                     Math.sin(vz * 1.4 - timeFactor * 0.4 * introSpinFactor);
-
-        const mouseActivity = Math.abs(mouse.targetX - mouse.x) + Math.abs(mouse.targetY - mouse.y);
-        const displacement = (coreIntensity + mouseActivity * 0.12 + scrollPercent * 0.1) * wave;
-
-        const len = Math.sqrt(vx * vx + vy * vy + vz * vz) || 1;
-        corePos[i3] = vx + (vx / len) * displacement;
-        corePos[i3 + 1] = vy + (vy / len) * displacement;
-        corePos[i3 + 2] = vz + (vz / len) * displacement;
-      }
-      coreGeometry.attributes.position.needsUpdate = true;
-      coreGeometry.computeVertexNormals();
-
-      // Core rotations
       core.rotation.y = timeFactor * 0.15 * introSpinFactor;
-      core.rotation.z = Math.sin(timeFactor * 0.2) * 0.08 * introSpinFactor;
-
       innerCore.rotation.x = -timeFactor * 0.25 * introSpinFactor;
       const pulse = 1.0 + Math.sin(timeFactor * 1.8 * introSpinFactor) * 0.06;
       innerCore.scale.set(pulse, pulse, pulse);
-
-      // Swirling particles animations & scroll transitions
-      const partPos = particlesGeometry.attributes.position.array;
-      const partColors = particlesGeometry.attributes.color.array;
-      const runColorUpdate = colorTransitionFrames > 0;
-
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-
-        // Dynamic targets calculations per state:
-        let tx = 0, ty = 0, tz = 0;
-
-        // 1. GALAXY Target: Swirling angle scaled by introSpinFactor
-        const radiusVal = particleRadii[i];
-        particleAngles[i] += particleSpeeds[i] * introSpinFactor; // continuous orbit spin
-        const galAngle = particleAngles[i];
-        const gxGalaxy = Math.cos(galAngle) * radiusVal;
-        const gyGalaxy = particleHeights[i];
-        const gzGalaxy = Math.sin(galAngle) * radiusVal;
-
-        // 2. GRID Target: gentle hover/float
-        const gxGrid = posGrid[i3];
-        const gyGrid = posGrid[i3 + 1] + Math.sin(timeFactor * introSpinFactor + posGrid[i3] * 1.5) * 0.06;
-        const gzGrid = posGrid[i3 + 2];
-
-        // 3. HELIX Target: spin the double helix
-        const hAngle = (i * 0.045) + timeFactor * 0.25 * introSpinFactor;
-        const isArmA = i % 2 === 0;
-        const factor = isArmA ? 1 : -1;
-        const hRadius = 1.6;
-        const gxHelix = Math.cos(hAngle) * hRadius * factor;
-        const gyHelix = posHelix[i3 + 1];
-        const gzHelix = Math.sin(hAngle) * hRadius * factor;
-
-        // 4. CYBER WAVE Target: sine wave heights
-        const gxWave = posWave[i3];
-        const gzWave = posWave[i3 + 2];
-        const gyWave = posWave[i3 + 1] + Math.sin(gxWave * 0.6 + timeFactor * 1.8 * introSpinFactor) * Math.cos(gzWave * 0.6 + timeFactor * 1.2 * introSpinFactor) * 0.45;
-
-        // 5. VORTEX Target: very fast spinning
-        const vorRadius = Math.sqrt(posVortex[i3] * posVortex[i3] + posVortex[i3 + 2] * posVortex[i3 + 2]);
-        const vorAngle = Math.atan2(posVortex[i3 + 2], posVortex[i3]) + timeFactor * (0.8 + 0.1 / (vorRadius + 0.1)) * introSpinFactor;
-        const gxVortex = Math.cos(vorAngle) * vorRadius;
-        const gyVortex = posVortex[i3 + 1] + Math.sin(timeFactor * 2.0 * introSpinFactor + vorRadius) * 0.04;
-        const gzVortex = Math.sin(vorAngle) * vorRadius;
-
-        // Segment interpolation (Galaxy -> Grid -> Helix -> Cyber Wave -> Vortex)
-        if (activeStage === 0) {
-          tx = gxGalaxy + (gxGrid - gxGalaxy) * stageProgress;
-          ty = gyGalaxy + (gyGrid - gyGalaxy) * stageProgress;
-          tz = gzGalaxy + (gzGrid - gzGalaxy) * stageProgress;
-        } else if (activeStage === 1) {
-          tx = gxGrid + (gxHelix - gxGrid) * stageProgress;
-          ty = gyGrid + (gyHelix - gyGrid) * stageProgress;
-          tz = gzGrid + (gzHelix - gzGrid) * stageProgress;
-        } else if (activeStage === 2) {
-          tx = gxHelix + (gxWave - gxHelix) * stageProgress;
-          ty = gyHelix + (gyWave - gyHelix) * stageProgress;
-          tz = gzHelix + (gzWave - gzHelix) * stageProgress;
-        } else {
-          tx = gxWave + (gxVortex - gxWave) * stageProgress;
-          ty = gyWave + (gyVortex - gyWave) * stageProgress;
-          tz = gzWave + (gzVortex - gzWave) * stageProgress;
-        }
-
-        // Apply mouse physics: repel particles nearby in world space
-        // Optimization: using squared distance comparison (distSq < 4.0) to avoid slow square roots on every frame
-        if (mouse.active) {
-          const dx = tx - mouseWorld.x;
-          const dy = ty - mouseWorld.y;
-          const dz = tz - mouseWorld.z;
-          const distSq = dx * dx + dy * dy + dz * dz;
-          
-          if (distSq < 4.0 && distSq > 0.0001) {
-            const dist = Math.sqrt(distSq);
-            const repulsionForce = (2.0 - dist) / 2.0; // 0 to 1
-            const pushX = (dx / dist) * repulsionForce * 0.9;
-            const pushY = (dy / dist) * repulsionForce * 0.9;
-            const pushZ = (dz / dist) * repulsionForce * 0.9;
-            
-            tx += pushX;
-            ty += pushY;
-            tz += pushZ;
-          }
-        }
-
-        // Lerp active coordinate toward dynamic target coordinates
-        partPos[i3] += (tx - partPos[i3]) * 0.05;
-        partPos[i3 + 1] += (ty - partPos[i3 + 1]) * 0.05;
-        partPos[i3 + 2] += (tz - partPos[i3 + 2]) * 0.05;
-
-        // Dynamic particle colors lerping (Throttled optimization)
-        if (runColorUpdate) {
-          const baseColor = targetColors.palette[i % 3].clone();
-          baseColor.lerp(new THREE.Color(0xffffff), Math.max(0, 1.0 - radiusVal / 3.0) * 0.5);
-
-          partColors[i3] += (baseColor.r - partColors[i3]) * 0.04;
-          partColors[i3 + 1] += (baseColor.g - partColors[i3 + 1]) * 0.04;
-          partColors[i3 + 2] += (baseColor.b - partColors[i3 + 2]) * 0.04;
-        }
-      }
-      
-      particlesGeometry.attributes.position.needsUpdate = true;
-      
-      // Throttle colors buffer upload to GPU (only uploads when scroll/theme is actively changing)
-      if (runColorUpdate) {
-        particlesGeometry.attributes.color.needsUpdate = true;
-        colorTransitionFrames--;
-      }
-
-      // Subtle rotation of entire galaxy Points mesh
-      galaxyParticles.rotation.y = timeFactor * 0.02 * introSpinFactor;
 
       // Update orbits
       satellites.forEach((sat) => {
@@ -604,37 +399,154 @@ export default function ThreeHero() {
         sat.mesh.material.color.lerp(targetColors.light2, 0.04);
       });
 
-      // Smooth lights color transitions
+      // Smooth lights and materials color transitions
       innerCore.material.color.lerp(targetColors.innerCore, 0.04);
       light1.color.lerp(targetColors.light1, 0.04);
       light2.color.lerp(targetColors.light2, 0.04);
       mouseLight.color.lerp(targetColors.light3, 0.04);
 
+      if (frameCount % 2 === 0) {
+        const partPos = particlesGeometry.attributes.position.array;
+        const runColorUpdate = colorTransitionFrames > 0;
+        const partColors = particlesGeometry.attributes.color.array;
+
+        for (let i = 0; i < particleCount; i++) {
+          const i3 = i * 3;
+          let tx = 0, ty = 0, tz = 0;
+
+          // Target 0: Gyroscope HUD Rings (Active Orbit Rotations)
+          const ringIndex = i % 3;
+          const ringRadius = particleRadii[i];
+          const ringAngle = particleAngles[i] + timeFactor * (0.4 + ringIndex * 0.2);
+          let gxGyro = 0, gyGyro = 0, gzGyro = 0;
+          if (ringIndex === 0) {
+            gxGyro = Math.cos(ringAngle) * ringRadius;
+            gyGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.06;
+            gzGyro = Math.sin(ringAngle) * ringRadius;
+          } else if (ringIndex === 1) {
+            gxGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.06;
+            gyGyro = Math.cos(ringAngle) * ringRadius;
+            gzGyro = Math.sin(ringAngle) * ringRadius;
+          } else {
+            gxGyro = Math.cos(ringAngle) * ringRadius;
+            gyGyro = Math.sin(ringAngle) * ringRadius;
+            gzGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.06;
+          }
+
+          // Target 1: Flowing Data Streams (Scrolling X coordinates)
+          const streamSpeed = 1.5;
+          let gxGrid = posGrid[i3] + timeFactor * streamSpeed;
+          // Wrap X coordinates between -6 and 6
+          gxGrid = ((gxGrid + 6) % 12) - 6;
+          const gyGrid = posGrid[i3 + 1];
+          const gzGrid = posGrid[i3 + 2];
+
+          // Target 2: Spinning Helix
+          const hAngle = posHelixAngle[i] + timeFactor * 0.9;
+          const isArmA = (i % 2 === 0);
+          const factor = isArmA ? 1 : -1;
+          const hRadius = 1.6;
+          const gxHelix = Math.cos(hAngle) * hRadius * factor;
+          const gyHelix = posHelix[i3 + 1];
+          const gzHelix = Math.sin(hAngle) * hRadius * factor;
+
+          // Target 3: Scrolling Data Tunnel (Moving Z coordinates)
+          const tunnelSpeed = 2.0;
+          const tRadius = posTunnelRadius[i];
+          const tAngle = posTunnelAngle[i];
+          let gzTunnel = posTunnelZ[i] - timeFactor * tunnelSpeed;
+          // Wrap Z coordinates between -5 and 5
+          gzTunnel = ((gzTunnel + 5) % 10) - 5;
+          const gxTunnel = Math.cos(tAngle) * tRadius;
+          const gyTunnel = Math.sin(tAngle) * tRadius;
+
+          // Target 4: Falling Digital Rain
+          const rainSpeed = 3.0;
+          const rRadius = posVortexRadius[i];
+          const rAngle = posVortexAngle[i];
+          let gyVortex = posVortexY[i] - timeFactor * rainSpeed;
+          // Wrap Y coordinates between -3.5 and 3.5
+          gyVortex = ((gyVortex + 3.5) % 7.0) - 3.5;
+          const gxVortex = Math.cos(rAngle) * rRadius;
+          const gzVortex = Math.sin(rAngle) * rRadius;
+
+          // Segment interpolation
+          if (activeStage === 0) {
+            tx = gxGyro + (gxGrid - gxGyro) * stageProgress;
+            ty = gyGyro + (gyGrid - gyGyro) * stageProgress;
+            tz = gzGyro + (gzGrid - gzGyro) * stageProgress;
+          } else if (activeStage === 1) {
+            tx = gxGrid + (gxHelix - gxGrid) * stageProgress;
+            ty = gyGrid + (gyHelix - gyGrid) * stageProgress;
+            tz = gzGrid + (gzHelix - gzGrid) * stageProgress;
+          } else if (activeStage === 2) {
+            tx = gxHelix + (gxTunnel - gxHelix) * stageProgress;
+            ty = gyHelix + (gyTunnel - gyHelix) * stageProgress;
+            tz = gzHelix + (gzTunnel - gzHelix) * stageProgress;
+          } else {
+            tx = gxTunnel + (gxVortex - gxTunnel) * stageProgress;
+            ty = gyTunnel + (gyVortex - gyTunnel) * stageProgress;
+            tz = gzTunnel + (gzVortex - gzTunnel) * stageProgress;
+          }
+
+          // Apply mouse physics: repel particles nearby in world space
+          if (mouse.active) {
+            const dx = tx - mouseWorld.x;
+            const dy = ty - mouseWorld.y;
+            const dz = tz - mouseWorld.z;
+            const distSq = dx * dx + dy * dy + dz * dz;
+            if (distSq < 4.0 && distSq > 0.0001) {
+              const dist = Math.sqrt(distSq);
+              const repulsionForce = (2.0 - dist) / 2.0;
+              tx += (dx / dist) * repulsionForce * 0.9;
+              ty += (dy / dist) * repulsionForce * 0.9;
+              tz += (dz / dist) * repulsionForce * 0.9;
+            }
+          }
+
+          partPos[i3] += (tx - partPos[i3]) * 0.05;
+          partPos[i3 + 1] += (ty - partPos[i3 + 1]) * 0.05;
+          partPos[i3 + 2] += (tz - partPos[i3 + 2]) * 0.05;
+
+          if (runColorUpdate) {
+            const baseColor = targetColors.palette[i % 3].clone();
+            baseColor.lerp(new THREE.Color(0xffffff), Math.max(0, 1.0 - ringRadius / 3.0) * 0.5);
+            partColors[i3] += (baseColor.r - partColors[i3]) * 0.04;
+            partColors[i3 + 1] += (baseColor.g - partColors[i3 + 1]) * 0.04;
+            partColors[i3 + 2] += (baseColor.b - partColors[i3 + 2]) * 0.04;
+          }
+        }
+        
+        particlesGeometry.attributes.position.needsUpdate = true;
+        if (runColorUpdate) {
+          particlesGeometry.attributes.color.needsUpdate = true;
+        }
+      }
+
+      if (colorTransitionFrames > 0 && frameCount % 2 === 0) {
+        colorTransitionFrames--;
+      }
+      
       frameId = requestAnimationFrame(animate);
       renderer.render(scene, camera);
     };
 
     resize();
     animate();
-
-    // 10. Cleanup
+    
     return () => {
+      cancelAnimationFrame(frameId);
       observer.disconnect();
+      visibilityObserver.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseleave", onMouseLeave);
       window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frameId);
-
       coreGeometry.dispose();
       coreMaterial.dispose();
       innerGeometry.dispose();
       innerMaterial.dispose();
       satelliteGeom.dispose();
-      satellites.forEach((sat) => {
-        sat.mesh.geometry.dispose();
-        sat.mesh.material.dispose();
-      });
+
       particlesGeometry.dispose();
       particlesMaterial.dispose();
       renderer.dispose();

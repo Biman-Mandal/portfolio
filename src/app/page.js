@@ -4,7 +4,7 @@ import CertificatesSection from "@/components/CertificatesSection";
 import CoursesSection from "@/components/CoursesSection";
 import EducationSection from "@/components/EducationSection";
 import AboutSection from "@/components/AboutSection";
-import ThemeToggle from "@/components/ThemeToggle";
+
 import InteractiveCodeWindow from "@/components/InteractiveCodeWindow";
 import { getAllPortfolioContent } from "@/lib/db";
 
@@ -58,7 +58,7 @@ export default async function Home() {
           <a href="#about" id="nav-about-link">About</a>
           <a href="#contact" id="nav-contact-link">Contact</a>
           <a href="/admin" id="nav-admin-link">Admin</a>
-          <ThemeToggle />
+
         </div>
       </nav>
 

@@ -351,7 +351,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="table-responsive">
-                <table className="table table-dark table-striped table-hover align-middle mb-0">
+                <table className="table table-striped table-hover align-middle mb-0">
                   <thead>
                     <tr>
                       <th>Section</th>

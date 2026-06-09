@@ -19,32 +19,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${sansFont.variable}`}>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const saved = localStorage.getItem('portfolio-theme');
-                  const pref = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-                  const theme = saved || pref;
-                  document.documentElement.setAttribute('data-theme', theme);
-                } catch (e) {}
-              })();
-            `
-          }}
-        />
-      </head>
+    <html lang="en" className={`${sansFont.variable}`} data-theme="light" suppressHydrationWarning>
+      <head />
       <body className="font-sans-active">
         <ThreeHero />
         <ScrollSectionHandler />
         <CursorFollower />
-        <div className="bg-glow-container">
-          <div className="bg-glow-1" />
-          <div className="bg-glow-2" />
-          <div className="bg-glow-3" />
-        </div>
+        <div className="bg-glow-container" />
         {children}
       </body>
     </html>

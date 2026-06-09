@@ -62,6 +62,7 @@ export function toGeneric(type, row) {
     title: row.title || row.institution || row.hero_title || row.full_name || "",
     description: row.description || row.bio || row.hero_subtitle || "",
     link: row.link || row.live_url || row.credential_url || row.resume_url || "",
+    github: row.repo_url || "",
     location: row.location || "",
     map_embed_url: row.map_embed_url || "",
     media: parseMedia(row.media),

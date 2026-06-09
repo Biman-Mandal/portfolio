@@ -1,53 +1,26 @@
 :root {
-  --bg: #090b10;
-  --bg-alt: rgba(13, 17, 25, 0.45);
-  --panel: rgba(17, 23, 34, 0.65);
-  --panel-strong: rgba(23, 32, 48, 0.82);
-  --ink: #f5f7fb;
-  --muted: #94a3b8;
-  --line: rgba(255, 255, 255, 0.09);
-  --accent: #18d5b5;
-  --accent-2: #ffb545;
-  --danger: #ff5d6c;
-  --code-bg: rgba(8, 13, 20, 0.82);
-  --code-border: rgba(121, 242, 192, 0.2);
-  --code-green: #79f2c0;
-  --code-blue: #72b7ff;
-  --code-pink: #ff7ab6;
-  --card-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.6);
-  --nav-bg: rgba(9, 11, 16, 0.72);
-  --close-filter: invert(1) grayscale(1) brightness(2);
-
-  --hero-grid: rgba(255, 255, 255, 0.025);
-  --hero-glow: radial-gradient(circle at 76% 22%, rgba(24, 213, 181, 0.14), transparent 28%);
-  --hero-fade: linear-gradient(90deg, #090b10 98%, rgba(9, 11, 16, 0.72), rgba(9, 11, 16, 0.2));
-  --bg-glow-opacity: 0.15;
-  --bg-glow-3-opacity: 0.08;
-}
-
-:root[data-theme="light"] {
-  --bg: #f8fafc;
-  --bg-alt: rgba(241, 245, 249, 0.45);
+  --bg: #f0f5ff;
+  --bg-alt: rgba(20, 184, 166, 0.05);
   --panel: rgba(255, 255, 255, 0.68);
   --panel-strong: rgba(248, 250, 252, 0.85);
   --ink: #0f172a;
   --muted: #475569;
-  --line: rgba(15, 23, 42, 0.08);
+  --line: rgba(15, 118, 110, 0.08);
   --accent: #0f766e;
-  --accent-2: #d97706;
+  --accent-2: #1d4ed8;
   --danger: #dc2626;
   --code-bg: #1e293b;
   --code-border: rgba(15, 23, 42, 0.05);
   --code-green: #34d399;
   --code-blue: #60a5fa;
   --code-pink: #f472b6;
-  --card-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --nav-bg: rgba(248, 250, 252, 0.80);
+  --card-shadow: 0 10px 25px -5px rgba(15, 118, 110, 0.06);
+  --nav-bg: rgba(240, 245, 255, 0.80);
   --close-filter: none;
 
   --hero-grid: rgba(15, 23, 42, 0.025);
-  --hero-glow: radial-gradient(circle at 76% 22%, rgba(13, 148, 136, 0.12), transparent 28%);
-  --hero-fade: linear-gradient(90deg, #f8fafc 98%, rgba(248, 250, 252, 0.72), rgba(248, 250, 252, 0.2));
+  --hero-glow: radial-gradient(circle at 76% 22%, rgba(15, 118, 110, 0.12), transparent 28%);
+  --hero-fade: linear-gradient(90deg, #f0f5ff 98%, rgba(240, 245, 255, 0.72), rgba(240, 245, 255, 0.2));
   --bg-glow-opacity: 0.08;
   --bg-glow-3-opacity: 0.04;
 }
@@ -449,6 +422,7 @@ p {
 
 .section {
   padding: 90px clamp(18px, 5vw, 72px);
+  scroll-margin-top: 100px;
 }
 
 .section.alt {
@@ -819,11 +793,28 @@ p {
   background: var(--panel-strong);
 }
 
-.table-dark {
+.admin-panel .table {
   --bs-table-bg: var(--panel);
   --bs-table-striped-bg: var(--panel-strong);
+  --bs-table-hover-bg: rgba(15, 118, 110, 0.06);
   --bs-table-border-color: var(--line);
   color: var(--ink);
+}
+
+.admin-panel .table th {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--line);
+}
+
+.admin-panel .table td {
+  color: var(--ink);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
 }
 
 @media (max-width: 920px) {
@@ -898,58 +889,18 @@ p {
 .reveal-delay-4 { animation-delay: 0.4s; }
 .reveal-delay-5 { animation-delay: 0.5s; }
 
-/* Animated Floating Background Orbs */
+/* Premium Static Background Glows (No dynamic GPU blur filters for maximum rendering performance) */
 .bg-glow-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  overflow: hidden;
+  inset: 0;
+  z-index: -2;
   pointer-events: none;
   background: var(--bg);
-}
-
-.bg-glow-1,
-.bg-glow-2,
-.bg-glow-3 {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  pointer-events: none;
-  transition: background-color 0.8s ease, opacity 0.8s ease;
-}
-
-.bg-glow-1 {
-  width: min(60vw, 650px);
-  height: min(60vw, 650px);
-  background: var(--accent);
-  top: -10%;
-  right: -10%;
-  opacity: var(--bg-glow-opacity);
-  animation: float-1 25s infinite alternate ease-in-out;
-}
-
-.bg-glow-2 {
-  width: min(50vw, 550px);
-  height: min(50vw, 550px);
-  background: var(--accent-2);
-  bottom: -10%;
-  left: -10%;
-  opacity: var(--bg-glow-opacity);
-  animation: float-2 20s infinite alternate ease-in-out;
-}
-
-.bg-glow-3 {
-  width: min(40vw, 450px);
-  height: min(40vw, 450px);
-  background: #ec4899;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: var(--bg-glow-3-opacity);
-  animation: float-3 30s infinite alternate ease-in-out;
+  background-image: 
+    radial-gradient(circle at 90% -10%, rgba(15, 118, 110, 0.08), transparent 45%),
+    radial-gradient(circle at -10% 110%, rgba(29, 48, 216, 0.06), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.03), transparent 40%);
+  transition: background-color 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @keyframes float-1 {
@@ -1314,15 +1265,14 @@ p {
   }
 }
 
-/* Page-wide Glassmorphism overlays */
+/* Page-wide High-Performance Card Styling (No dynamic CPU blur for smooth scrolling) */
 .content-card,
 .course-card,
 .timeline-content,
 .info-panel,
 .about-image-wrapper,
 .certificate-row {
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: var(--card-shadow);
 }
 
 /* Slower, ultra-smooth background fading for body and shell */
@@ -1332,56 +1282,30 @@ body,
               color 0.4s ease;
 }
 
-/* Alternating 2-Color Combination Maps - Dark Mode (Default) */
-/* Color Combo 1 (Cyan/Purple): Home, Certificates, Education, Contact */
+/* Alternating 2-Color Combination Maps (Always Light Mode) */
+/* Color Combo 1 (Steel Teal & Blue): Home, Certificates, Education, Contact */
 :root[data-active-section="home"],
 :root[data-active-section="certificates"],
 :root[data-active-section="education"],
 :root[data-active-section="contact"] {
-  --bg: #050811;
-  --bg-alt: rgba(10, 16, 32, 0.45);
-  --accent: #00f2fe;
-  --accent-2: #9b5de5;
-  --line: rgba(0, 242, 254, 0.09);
-  --card-shadow: 0 10px 30px -15px rgba(0, 242, 254, 0.25);
+  --bg: #f0f5ff;
+  --bg-alt: rgba(20, 184, 166, 0.05);
+  --accent: #0f766e;
+  --accent-2: #1d4ed8;
+  --line: rgba(15, 118, 110, 0.08);
+  --card-shadow: 0 10px 25px -5px rgba(15, 118, 110, 0.06);
 }
 
-/* Color Combo 2 (Rose/Orange): Projects, Courses, About */
+/* Color Combo 2 (Indigo & Amber-Gold): Projects, Courses, About */
 :root[data-active-section="projects"],
 :root[data-active-section="courses"],
 :root[data-active-section="about"] {
-  --bg: #0c0406;
-  --bg-alt: rgba(28, 10, 15, 0.45);
-  --accent: #ff007f;
-  --accent-2: #ffb545;
-  --line: rgba(255, 0, 127, 0.09);
-  --card-shadow: 0 10px 30px -15px rgba(255, 0, 127, 0.25);
-}
-
-/* Alternating 2-Color Combination Maps - Light Mode */
-/* Color Combo 1 (Cyan/Purple): Home, Certificates, Education, Contact */
-:root[data-theme="light"][data-active-section="home"],
-:root[data-theme="light"][data-active-section="certificates"],
-:root[data-theme="light"][data-active-section="education"],
-:root[data-theme="light"][data-active-section="contact"] {
-  --bg: #f0f5ff;
-  --bg-alt: rgba(0, 242, 254, 0.05);
-  --accent: #0984e3;
-  --accent-2: #6c5ce7;
-  --line: rgba(9, 132, 227, 0.08);
-  --card-shadow: 0 10px 25px -5px rgba(9, 132, 227, 0.06);
-}
-
-/* Color Combo 2 (Rose/Orange): Projects, Courses, About */
-:root[data-theme="light"][data-active-section="projects"],
-:root[data-theme="light"][data-active-section="courses"],
-:root[data-theme="light"][data-active-section="about"] {
-  --bg: #fff5f7;
-  --bg-alt: rgba(255, 0, 127, 0.05);
-  --accent: #d81b60;
-  --accent-2: #e65100;
-  --line: rgba(216, 27, 96, 0.08);
-  --card-shadow: 0 10px 25px -5px rgba(216, 27, 96, 0.06);
+  --bg: #f8fafc;
+  --bg-alt: rgba(99, 102, 241, 0.05);
+  --accent: #4338ca;
+  --accent-2: #b45309;
+  --line: rgba(67, 56, 202, 0.08);
+  --card-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.06);
 }
 
 /* Premium Card Active Hover Glow Shadows */
@@ -1450,21 +1374,21 @@ body,
   to { opacity: 1; transform: scale(1); }
 }
 
-:root[data-active-section="projects"] #projects .content-card:nth-child(odd) {
+#projects.revealed .content-card:nth-child(odd) {
   animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="projects"] #projects .content-card:nth-child(even) {
+#projects.revealed .content-card:nth-child(even) {
   animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="projects"] #projects .content-card:nth-child(1) { animation-delay: 0.1s; }
-:root[data-active-section="projects"] #projects .content-card:nth-child(2) { animation-delay: 0.3s; }
-:root[data-active-section="projects"] #projects .card-tags span {
+#projects.revealed .content-card:nth-child(1) { animation-delay: 0.1s; }
+#projects.revealed .content-card:nth-child(2) { animation-delay: 0.3s; }
+#projects.revealed .card-tags span {
   animation: staggerTags 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="projects"] #projects .card-tags span:nth-child(1) { animation-delay: 0.4s; }
-:root[data-active-section="projects"] #projects .card-tags span:nth-child(2) { animation-delay: 0.5s; }
-:root[data-active-section="projects"] #projects .card-tags span:nth-child(3) { animation-delay: 0.6s; }
-:root[data-active-section="projects"] #projects .card-tags span:nth-child(4) { animation-delay: 0.7s; }
+#projects.revealed .card-tags span:nth-child(1) { animation-delay: 0.4s; }
+#projects.revealed .card-tags span:nth-child(2) { animation-delay: 0.5s; }
+#projects.revealed .card-tags span:nth-child(3) { animation-delay: 0.6s; }
+#projects.revealed .card-tags span:nth-child(4) { animation-delay: 0.7s; }
 
 /* 2. Certificates: Scale & Translate Expand with rotating icon degrees badge */
 @keyframes certExpand {
@@ -1476,16 +1400,16 @@ body,
   to { transform: rotate(0deg) scale(1); }
 }
 
-:root[data-active-section="certificates"] #certificates .certificate-row {
+#certificates.revealed .certificate-row {
   animation: certExpand 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(1) { animation-delay: 0.1s; }
-:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(2) { animation-delay: 0.3s; }
-:root[data-active-section="certificates"] #certificates .badge-icon {
+#certificates.revealed .certificate-row:nth-child(1) { animation-delay: 0.1s; }
+#certificates.revealed .certificate-row:nth-child(2) { animation-delay: 0.3s; }
+#certificates.revealed .badge-icon {
   animation: rotateDegreesBadge 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(1) .badge-icon { animation-delay: 0.3s; }
-:root[data-active-section="certificates"] #certificates .certificate-row:nth-child(2) .badge-icon { animation-delay: 0.5s; }
+#certificates.revealed .certificate-row:nth-child(1) .badge-icon { animation-delay: 0.3s; }
+#certificates.revealed .certificate-row:nth-child(2) .badge-icon { animation-delay: 0.5s; }
 
 /* 3. Courses: Elastic Flip & Pop + Glowing Dot Pulsing */
 @keyframes coursePop {
@@ -1498,12 +1422,12 @@ body,
   100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); }
 }
 
-:root[data-active-section="courses"] #courses .course-card {
+#courses.revealed .course-card {
   animation: coursePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
-:root[data-active-section="courses"] #courses .course-card:nth-child(1) { animation-delay: 0.1s; }
-:root[data-active-section="courses"] #courses .course-card:nth-child(2) { animation-delay: 0.3s; }
-:root[data-active-section="courses"] #courses .course-dot {
+#courses.revealed .course-card:nth-child(1) { animation-delay: 0.1s; }
+#courses.revealed .course-card:nth-child(2) { animation-delay: 0.3s; }
+#courses.revealed .course-dot {
   animation: dotPulse 2s infinite ease-in-out;
 }
 
@@ -1521,16 +1445,16 @@ body,
   to { opacity: 1; transform: translateX(0); }
 }
 
-:root[data-active-section="education"] #education .timeline-line {
+#education.revealed .timeline-line {
   animation: drawTimeline 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="education"] #education .timeline-item:nth-child(odd) {
+#education.revealed .timeline-item:nth-child(odd) {
   animation: timelineLeft 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="education"] #education .timeline-item:nth-child(even) {
+#education.revealed .timeline-item:nth-child(even) {
   animation: timelineRight 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="education"] #education .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+#education.revealed .timeline-item:nth-child(1) { animation-delay: 0.2s; }
 
 /* 5. About: Zoom Blur Photo & Skills Chips Stagger */
 @keyframes zoomBlur {
@@ -1546,18 +1470,18 @@ body,
   to { opacity: 1; transform: translateY(0); }
 }
 
-:root[data-active-section="about"] #about .about-image-wrapper {
+#about.revealed .about-image-wrapper {
   animation: zoomBlur 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="about"] #about .about-content {
+#about.revealed .about-content {
   animation: slideUpAbout 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="about"] #about .detail-item {
+#about.revealed .detail-item {
   animation: skillsStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="about"] #about .detail-item:nth-child(1) { animation-delay: 0.3s; }
-:root[data-active-section="about"] #about .detail-item:nth-child(2) { animation-delay: 0.5s; }
-:root[data-active-section="about"] #about .detail-item:nth-child(3) { animation-delay: 0.7s; }
+#about.revealed .detail-item:nth-child(1) { animation-delay: 0.3s; }
+#about.revealed .detail-item:nth-child(2) { animation-delay: 0.5s; }
+#about.revealed .detail-item:nth-child(3) { animation-delay: 0.7s; }
 
 /* 6. Contact: Split Side Slides */
 @keyframes contactLeft {
@@ -1569,10 +1493,10 @@ body,
   to { opacity: 1; transform: translateX(0); }
 }
 
-:root[data-active-section="contact"] #contact .info-panel {
+#contact.revealed .info-panel {
   animation: contactLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-:root[data-active-section="contact"] #contact .map {
+#contact.revealed .map {
   animation: contactRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
