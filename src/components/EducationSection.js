@@ -30,7 +30,7 @@ export default function EducationSection({ id, title, kicker }) {
     {
       id: 'c4',
       title: 'Web Developer',
-      company: '',
+      company: 'Notebrains',
       period: 'Apr 2022 - Mar 2024 · 2 yrs',
       location: 'On-site',
       description: 'Laravel and MySQL',
@@ -38,7 +38,7 @@ export default function EducationSection({ id, title, kicker }) {
     {
       id: 'c5',
       title: 'Junior Web Developer',
-      company: '',
+      company: 'Notebrains',
       period: 'Feb 2022 - Mar 2022 · 2 mos',
       location: '',
       description: '',
