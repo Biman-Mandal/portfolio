@@ -52,13 +52,10 @@ export default async function Home() {
         </a>
         <div className="nav-links">
           <a href="#projects" id="nav-projects-link">Projects</a>
-          <a href="#certificates" id="nav-certs-link">Certificates</a>
-          <a href="#courses" id="nav-courses-link">Courses</a>
-          <a href="#education" id="nav-edu-link">Education</a>
+          <a href="#education" id="nav-edu-link">Career</a>
           <a href="#about" id="nav-about-link">About</a>
           <a href="#contact" id="nav-contact-link">Contact</a>
           <a href="/admin" id="nav-admin-link">Admin</a>
-
         </div>
       </nav>
 
@@ -108,12 +105,10 @@ export default async function Home() {
       </section>
 
       <ProjectsSection id="projects" title="Projects" kicker="Selected full stack builds with uploadable images, videos, links, and descriptions." items={byType(content, "project")} />
-      <CertificatesSection id="certificates" title="Certificates" kicker="Proof of learning, achievements, and professional credentials." items={byType(content, "certificate")} />
-      <CoursesSection id="courses" title="Courses" kicker="Courses and training that support the technical stack." items={byType(content, "course")} />
-      <EducationSection id="education" title="Education" kicker="Education history, degrees, and academic milestones." items={byType(content, "education")} />
+      <EducationSection id="education" title="Career & Education" kicker="A timeline of my professional software engineering experience and academic background." items={byType(content, "education")} />
 
       {about ? (
-        <AboutSection id="about" title={about.title} description={about.description} />
+        <AboutSection id="about" title={about.title} description={about.description} certificates={byType(content, "certificate")} courses={byType(content, "course")} />
       ) : null}
 
       <ContactSection contact={contact} />

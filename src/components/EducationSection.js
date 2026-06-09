@@ -14,18 +14,37 @@ export default function EducationSection({ id, title, kicker, items = [] }) {
         <div className="timeline-items">
           {items.map((item, index) => {
             const delayClass = `reveal-delay-${(index % 3) + 1}`;
+            // If the degree contains BCA, Bachelor, College, or School, mark it as Education, otherwise Experience
+            const isEducation = 
+              item.degree?.toLowerCase().includes('bca') || 
+              item.degree?.toLowerCase().includes('bachelor') || 
+              item.degree?.toLowerCase().includes('school') || 
+              item.degree?.toLowerCase().includes('college') ||
+              item.degree?.toLowerCase().includes('university') ||
+              item.title?.toLowerCase().includes('techno india');
+
+            const duration = item.start_year 
+              ? `${item.start_year} — ${item.end_year || 'Present'}`
+              : '';
+
             return (
               <div className={`timeline-item reveal ${delayClass}`} key={item.id}>
                 <div className="timeline-dot-wrapper">
-                  <div className="timeline-dot" />
+                  <div className={`timeline-dot ${isEducation ? 'edu' : 'exp'}`} />
                 </div>
                 <div className="timeline-content">
-                  <span className="timeline-tag">Graduated</span>
-                  <h3>{item.title}</h3>
-                  {item.description ? <p className="timeline-desc">{item.description}</p> : null}
+                  <div className="timeline-header" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, gap: 8 }}>
+                    <span className={`timeline-tag ${isEducation ? 'edu' : 'exp'}`}>
+                      {isEducation ? 'Education' : 'Experience'}
+                    </span>
+                    {duration && <span className="timeline-duration" style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)' }}>{duration}</span>}
+                  </div>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>{item.degree || item.title}</h3>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--muted)', marginBottom: 8 }}>{item.degree ? item.title : ''}</h4>
+                  {item.description ? <p className="timeline-desc" style={{ marginBottom: 0 }}>{item.description}</p> : null}
                   {item.link ? (
-                    <a className="timeline-link" href={item.link} target="_blank" rel="noreferrer">
-                      Institution details &rarr;
+                    <a className="timeline-link" href={item.link} target="_blank" rel="noreferrer" style={{ display: 'inline-block', marginTop: 12 }}>
+                      Details &rarr;
                     </a>
                   ) : null}
                 </div>

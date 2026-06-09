@@ -68,6 +68,10 @@ export function toGeneric(type, row) {
     media: parseMedia(row.media),
     tech_stack: row.tech_stack ? (typeof row.tech_stack === "string" ? JSON.parse(row.tech_stack) : row.tech_stack) : [],
     sort_order: row.sort_order || 0,
+    start_year: row.start_year || null,
+    end_year: row.end_year || null,
+    degree: row.degree || "",
+    field_of_study: row.field_of_study || "",
     created_at: row.created_at,
     updated_at: row.updated_at
   };

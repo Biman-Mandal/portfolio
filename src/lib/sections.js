@@ -3,7 +3,7 @@ export const contentTypes = [
   { value: "project", label: "Projects" },
   { value: "certificate", label: "Certificates" },
   { value: "course", label: "Courses" },
-  { value: "education", label: "Education" },
+  { value: "education", label: "Experience & Education" },
   { value: "about", label: "About", singular: true },
   { value: "contact", label: "Contact", singular: true }
 ];

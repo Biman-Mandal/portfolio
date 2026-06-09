@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 
-export default function AboutSection({ id, title, description }) {
+export default function AboutSection({ id, title, description, certificates = [], courses = [] }) {
   const imageRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
@@ -81,6 +81,50 @@ export default function AboutSection({ id, title, description }) {
           </div>
         </div>
       </div>
+
+      {(certificates.length || courses.length) ? (
+        <div className="about-credentials reveal" style={{ marginTop: '56px', borderTop: '1px solid var(--line)', paddingTop: '40px' }}>
+          <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '24px', background: 'linear-gradient(135deg, var(--ink) 50%, var(--accent) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            Certifications & Continuous Learning
+          </h3>
+          
+          <div className="credentials-scroll">
+            {/* Render Certificates */}
+            {certificates.map((cert) => (
+              <div key={cert.id} className="credential-card">
+                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-2)', background: 'rgba(29, 78, 216, 0.06)', padding: '3px 8px', borderRadius: '6px', display: 'inline-block', marginBottom: '12px', border: '1px solid rgba(29, 78, 216, 0.12)' }}>
+                  Certificate
+                </span>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--ink)' }}>{cert.title}</h4>
+                <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent)', marginBottom: '8px' }}>{cert.issuer}</p>
+                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '1.5', marginBottom: '12px' }}>{cert.description}</p>
+                {cert.link && cert.link !== '#' && (
+                  <a href={cert.link} target="_blank" rel="noreferrer" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--accent-2)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    Verify Credential &rarr;
+                  </a>
+                )}
+              </div>
+            ))}
+
+            {/* Render Courses */}
+            {courses.map((course) => (
+              <div key={course.id} className="credential-card">
+                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)', background: 'rgba(15, 118, 110, 0.06)', padding: '3px 8px', borderRadius: '6px', display: 'inline-block', marginBottom: '12px', border: '1px solid rgba(15, 118, 110, 0.12)' }}>
+                  Course / Skill
+                </span>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--ink)' }}>{course.title}</h4>
+                <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--muted)', marginBottom: '8px' }}>{course.provider}</p>
+                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '1.5', marginBottom: '12px' }}>{course.description}</p>
+                {course.link && course.link !== '#' && (
+                  <a href={course.link} target="_blank" rel="noreferrer" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--accent-2)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    Course Link &rarr;
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

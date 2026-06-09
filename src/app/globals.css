@@ -460,6 +460,146 @@ p {
   gap: 24px;
 }
 
+.projects-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 24px;
+  padding-bottom: 24px;
+  padding-top: 12px; /* Prevent hover scaling from being clipped */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.projects-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.projects-scroll::-webkit-scrollbar-track {
+  background: var(--bg-alt);
+  border-radius: 99px;
+}
+
+.projects-scroll::-webkit-scrollbar-thumb {
+  background: rgba(15, 118, 110, 0.2);
+  border-radius: 99px;
+  transition: background 0.3s;
+}
+
+.projects-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.projects-scroll .content-card {
+  flex: 0 0 380px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 768px) {
+  .projects-scroll {
+    gap: 16px;
+    padding-bottom: 16px;
+  }
+  .projects-scroll .content-card {
+    flex: 0 0 85vw;
+  }
+}
+
+.scroll-controls {
+  display: flex;
+  gap: 8px;
+  align-self: flex-end;
+  margin-bottom: 6px;
+}
+
+.scroll-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel-strong);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.scroll-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(15, 118, 110, 0.2);
+}
+
+.scroll-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .scroll-controls {
+    display: none;
+  }
+}
+
+.credentials-scroll {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  padding-top: 8px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.credentials-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.credentials-scroll::-webkit-scrollbar-track {
+  background: var(--bg-alt);
+  border-radius: 99px;
+}
+
+.credentials-scroll::-webkit-scrollbar-thumb {
+  background: rgba(15, 118, 110, 0.15);
+  border-radius: 99px;
+  transition: background 0.3s;
+}
+
+.credentials-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.credential-card {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.credential-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .credentials-scroll {
+    gap: 16px;
+  }
+  .credential-card {
+    flex: 0 0 80vw;
+  }
+}
+
 .content-card {
   display: flex;
   min-height: 100%;
@@ -1079,12 +1219,25 @@ p {
   height: 14px;
   border-radius: 50%;
   background: var(--bg);
-  border: 3px solid var(--accent);
   box-shadow: 0 0 0 4px var(--line);
   transition: all 0.3s ease;
 }
 
-.timeline-item:hover .timeline-dot {
+.timeline-dot.edu {
+  border: 3px solid var(--accent-2);
+}
+
+.timeline-dot.exp {
+  border: 3px solid var(--accent);
+}
+
+.timeline-item:hover .timeline-dot.edu {
+  transform: scale(1.25);
+  background: var(--accent-2);
+  box-shadow: 0 0 10px var(--accent-2);
+}
+
+.timeline-item:hover .timeline-dot.exp {
   transform: scale(1.25);
   background: var(--accent);
   box-shadow: 0 0 10px var(--accent);
@@ -1111,12 +1264,20 @@ p {
   font-size: 11px;
   text-transform: uppercase;
   font-weight: 700;
-  color: var(--accent-2);
-  background: rgba(255, 181, 69, 0.08);
-  border: 1px solid rgba(255, 181, 69, 0.2);
   padding: 2px 8px;
   border-radius: 6px;
-  margin-bottom: 8px;
+}
+
+.timeline-tag.edu {
+  color: var(--accent-2);
+  background: rgba(29, 78, 216, 0.06);
+  border: 1px solid rgba(29, 78, 216, 0.15);
+}
+
+.timeline-tag.exp {
+  color: var(--accent);
+  background: rgba(15, 118, 110, 0.06);
+  border: 1px solid rgba(15, 118, 110, 0.15);
 }
 
 .timeline-content h3 {
