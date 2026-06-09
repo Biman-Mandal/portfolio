@@ -55,14 +55,13 @@ export default async function Home() {
           <a href="#education" id="nav-edu-link">Career</a>
           <a href="#about" id="nav-about-link">About</a>
           <a href="#contact" id="nav-contact-link">Contact</a>
-          <a href="/admin" id="nav-admin-link">Admin</a>
         </div>
       </nav>
 
       <section id="home" className="hero">
         <div className="hero-layout">
           <div className="hero-content">
-            <span className="eyebrow reveal">Next.js | MySQL | Three.js</span>
+            <span className="eyebrow reveal">Senior Software Developer | Full Stack Engineer | Building SaaS, CRM & Enterprise Applications</span>
             <h1 className="reveal reveal-delay-1">{intro.title}</h1>
             <p className="reveal reveal-delay-2">{intro.description}</p>
             <div className="hero-actions reveal reveal-delay-3">
@@ -80,6 +79,19 @@ export default async function Home() {
               <span>MySQL</span>
               <span>Three.js</span>
               <span>REST APIs</span>
+              <span>Laravel</span>
+              <span>MongoDB</span>
+              <span>PHP</span>
+              <span>Express.js</span>
+              <span>Git</span>
+              <span>Docker</span>
+              <span>Project Management</span>
+              <span>Sass</span>
+              <span>Linux</span>
+              <span>Postman</span>
+              <span>Tailwind CSS</span>
+              <span>CI/CD</span>
+              <span>Testing</span>
             </div>
           </div>
           <InteractiveCodeWindow>
@@ -105,7 +117,7 @@ export default async function Home() {
       </section>
 
       <ProjectsSection id="projects" title="Projects" kicker="Selected full stack builds with uploadable images, videos, links, and descriptions." items={byType(content, "project")} />
-      <EducationSection id="education" title="Career & Education" kicker="A timeline of my professional software engineering experience and academic background." items={byType(content, "education")} />
+      <EducationSection id="education" title="Career" kicker="A timeline of my professional software engineering experience" items={byType(content, "education")} />
 
       {about ? (
         <AboutSection id="about" title={about.title} description={about.description} certificates={byType(content, "certificate")} courses={byType(content, "course")} />

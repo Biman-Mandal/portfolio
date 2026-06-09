@@ -27,7 +27,7 @@ export default function AboutSection({ id, title, description, certificates = []
     setTilt({ x: 0, y: 0 });
   };
 
-  if (!description) return null;
+  const aboutDescription = `I am a Senior Software Developer with 4+ years of experience. I specialize in designing and maintaining scalable backend systems, database schemas, and clean frontend integrations using PHP/Laravel, Node.js (Express), MongoDB, and MySQL.\n\n⚡ Fast Engineering\nClean Next.js architecture with zero unnecessary bloat.\n\n🎨 Interactive WebGL\nCreating immersive experiences with custom Three.js visuals.\n\n🛡️ Safe & Production-Ready\nDatabase safety, secure environments, and robust codebases.`;
 
   return (
     <section id={id} className="section about-section">
@@ -54,31 +54,9 @@ export default function AboutSection({ id, title, description, certificates = []
             <span className="eyebrow">A Bit About Me</span>
             <h2>{title}</h2>
           </div>
-          <p className="about-copy">{description}</p>
+          <p className="about-copy">{aboutDescription}</p>
           
-          <div className="about-details">
-            <div className="detail-item">
-              <span className="detail-icon">⚡</span>
-              <div>
-                <h4>Fast Engineering</h4>
-                <p>Clean Next.js architecture with zero unnecessary bloat.</p>
-              </div>
-            </div>
-            <div className="detail-item">
-              <span className="detail-icon">🎨</span>
-              <div>
-                <h4>Interactive WebGL</h4>
-                <p>Creating immersive experiences with custom Three.js visuals.</p>
-              </div>
-            </div>
-            <div className="detail-item">
-              <span className="detail-icon">🛡️</span>
-              <div>
-                <h4>Safe & Production-Ready</h4>
-                <p>Database safety, secure environments, and robust codebases.</p>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
 
