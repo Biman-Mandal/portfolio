@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable React strict mode (optional but recommended)
   reactStrictMode: true,
-  // If you use any env vars locally, Vercel will read them from the dashboard
-  // No special rewrites needed for the app router
+  async rewrites() {
+    return [
+      { source: "/index.html", destination: "/" },
+      { source: "/admin.html", destination: "/admin" }
+    ];
+  }
 };
 
 module.exports = nextConfig;
