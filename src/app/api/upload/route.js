@@ -1,5 +1,4 @@
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 function isAllowed(request) {
@@ -9,9 +8,23 @@ function isAllowed(request) {
 }
 
 function safeName(name) {
-  const ext = path.extname(name).toLowerCase();
-  const base = path.basename(name, ext).replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+  const rawName = String(name || "upload");
+  const lastSegment = rawName.split(/[/\\]/).pop() || "upload";
+  const parts = lastSegment.split(".");
+  const ext = parts.length > 1 ? `.${parts.pop().toLowerCase()}` : "";
+  const base = parts.join(".").replace(/[^a-z0-9-]/gi, "-").toLowerCase() || "upload";
   return `${base}-${Date.now()}${ext}`;
+}
+
+function getStorageClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, supabaseKey);
 }
 
 export async function POST(request) {
@@ -21,8 +34,17 @@ export async function POST(request) {
 
   const form = await request.formData();
   const files = form.getAll("files").filter((file) => file?.name);
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadDir, { recursive: true });
+  const storage = getStorageClient();
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || "uploads";
+
+  if (!storage) {
+    return NextResponse.json(
+      {
+        error: "File uploads require Supabase Storage on Cloudflare. Set SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and SUPABASE_STORAGE_BUCKET."
+      },
+      { status: 501 }
+    );
+  }
 
   const uploaded = [];
   for (const file of files) {
@@ -30,11 +52,20 @@ export async function POST(request) {
       continue;
     }
 
-    const bytes = Buffer.from(await file.arrayBuffer());
     const filename = safeName(file.name);
-    await writeFile(path.join(uploadDir, filename), bytes);
+    const { error } = await storage.storage.from(bucket).upload(filename, file, {
+      contentType: file.type,
+      upsert: true
+    });
+
+    if (error) {
+      console.error("Upload failed:", error);
+      return NextResponse.json({ error: error.message || "Failed to upload file." }, { status: 500 });
+    }
+
+    const { data } = storage.storage.from(bucket).getPublicUrl(filename);
     uploaded.push({
-      url: `/uploads/${filename}`,
+      url: data.publicUrl,
       type: file.type,
       name: file.name
     });

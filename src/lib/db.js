@@ -1,30 +1,36 @@
-import fs from "fs/promises";
-import path from "path";
-import mysql from "mysql2/promise";
+import staticData from "@/data/static-data.json";
 import { createClient } from "@supabase/supabase-js";
 
 // Cache for connection instances
 let _mysqlPool = null;
 let _supabaseClient = null;
 
-const staticFilePath = path.join(process.cwd(), "src", "data", "static-data.json");
+function isNodeRuntime() {
+  return typeof process !== "undefined" && !!process.versions?.node;
+}
+
+function cloneStaticData() {
+  return JSON.parse(JSON.stringify(staticData));
+}
 
 // --------------------------------------------------------
 // 1. Connection Initializers
 // --------------------------------------------------------
 
-export function getPool() {
+export async function getPool() {
   if (!_mysqlPool) {
-    _mysqlPool = mysql.createPool({
-      host: process.env.MYSQL_HOST || "localhost",
-      port: Number(process.env.MYSQL_PORT || 3306),
-      user: process.env.MYSQL_USER || "root",
-      password: process.env.MYSQL_PASSWORD || "",
-      database: process.env.MYSQL_DATABASE || "portfolio_db",
-      waitForConnections: true,
-      connectionLimit: 10,
-      namedPlaceholders: true
-    });
+    _mysqlPool = import("mysql2/promise").then((mysql) =>
+      mysql.createPool({
+        host: process.env.MYSQL_HOST || "localhost",
+        port: Number(process.env.MYSQL_PORT || 3306),
+        user: process.env.MYSQL_USER || "root",
+        password: process.env.MYSQL_PASSWORD || "",
+        database: process.env.MYSQL_DATABASE || "portfolio_db",
+        waitForConnections: true,
+        connectionLimit: 10,
+        namedPlaceholders: true
+      })
+    );
   }
   return _mysqlPool;
 }
@@ -111,23 +117,17 @@ async function runWithFallback(opName, supabaseOp, mysqlOp, staticOp) {
 // --------------------------------------------------------
 
 async function readStaticFile() {
-  try {
-    const raw = await fs.readFile(staticFilePath, "utf8");
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error("Error reading static-data.json, using empty schema fallback:", err);
-    return {
-      portfolio_profile: [],
-      site_sections: [],
-      projects: [],
-      certificates: [],
-      courses: [],
-      education: []
-    };
-  }
+  return cloneStaticData();
 }
 
 async function writeStaticFile(data) {
+  if (!isNodeRuntime()) {
+    throw new Error("Static file writes are not available in this runtime. Configure Supabase or MySQL for updates.");
+  }
+
+  const fs = await import("fs/promises");
+  const path = await import("path");
+  const staticFilePath = path.join(process.cwd(), "src", "data", "static-data.json");
   await fs.mkdir(path.dirname(staticFilePath), { recursive: true });
   await fs.writeFile(staticFilePath, JSON.stringify(data, null, 2), "utf8");
 }
@@ -262,7 +262,7 @@ export async function getAllPortfolioContent() {
     },
     // MySQL
     async () => {
-      const pool = getPool();
+      const pool = await getPool();
       const [sections] = await pool.query("SELECT * FROM site_sections ORDER BY sort_order ASC");
       const [profileRows] = await pool.query("SELECT * FROM portfolio_profile WHERE id = 1 LIMIT 1");
       const [projects] = await pool.query("SELECT * FROM projects WHERE status = 'published' ORDER BY sort_order ASC, created_at DESC");
@@ -417,7 +417,7 @@ export async function createPortfolioContent(type, data) {
     },
     // MySQL
     async () => {
-      const pool = getPool();
+      const pool = await getPool();
       const media = Array.isArray(data.media) ? data.media : [];
       let result, rows;
 
@@ -573,7 +573,7 @@ export async function updatePortfolioContent(type, id, data) {
     },
     // MySQL
     async () => {
-      const pool = getPool();
+      const pool = await getPool();
       const media = Array.isArray(data.media) ? data.media : [];
       let rows;
 
@@ -685,7 +685,8 @@ export async function deletePortfolioContent(type, id) {
         course: "courses",
         education: "education"
       };
-      await getPool().query(`DELETE FROM ${tableByType[type]} WHERE id = ?`, [id]);
+      const pool = await getPool();
+      await pool.query(`DELETE FROM ${tableByType[type]} WHERE id = ?`, [id]);
       return { ok: true };
     },
     // Static Fallback
@@ -747,7 +748,7 @@ export async function upsertSingleton(type, data) {
     },
     // MySQL
     async () => {
-      const pool = getPool();
+      const pool = await getPool();
       const media = Array.isArray(data.media) ? data.media : [];
 
       if (type === "contact") {
