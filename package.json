@@ -11,6 +11,7 @@
     "db:seed": "node scripts/seed-db.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.1",
     "bootstrap": "^5.3.8",
     "lucide-react": "^0.468.0",
     "mysql2": "^3.11.5",

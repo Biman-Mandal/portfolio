@@ -1,0 +1,207 @@
+{
+  "portfolio_profile": [
+    {
+      "id": 1,
+      "full_name": "Biman Mandal",
+      "headline": "Senior Web Developer",
+      "bio": "I am a Senior Software Developer with 4+ years of experience in designing, developing, and maintaining scalable web applications and APIs. Currently working as a Lead Backend Developer, I specialize in Node.js (Express.js), TypeScript, MongoDB, PHP (Laravel), and MySQL, with hands-on experience across full-stack technologies.",
+      "email": "bimanm193@gmail.com",
+      "phone": "+91 62940 67811",
+      "location": "Kolkata, West Bengal, India",
+      "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.093557088927!2d88.363895!3d22.572646!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3adc8b5dfbefffff%3A0x1d4e0e5a6f2ea8b0!2sKolkata%2C%20West%20Bengal%2C%20India!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin",
+      "github_url": "https://github.com/im-bimanmandal",
+      "linkedin_url": "https://www.linkedin.com/in/im-bimanmandal",
+      "resume_url": "#"
+    }
+  ],
+  "site_sections": [
+    {
+      "id": 1,
+      "section_key": "intro",
+      "title": "Biman Mandal",
+      "description": "Senior Web Developer & Lead Backend Developer building high-performance APIs, scalable database architectures, and production-ready applications with Laravel, Node.js, and React.",
+      "media": [],
+      "sort_order": 1
+    },
+    {
+      "id": 2,
+      "section_key": "about",
+      "title": "About Me",
+      "description": "I am a Senior Software Developer with 4+ years of experience. I specialize in designing and maintaining scalable backend systems, database schemas, and clean frontend integrations using PHP/Laravel, Node.js (Express), MongoDB, and MySQL.",
+      "media": [],
+      "sort_order": 2
+    },
+    {
+      "id": 3,
+      "section_key": "contact",
+      "title": "Contact",
+      "description": "Email: bimanm193@gmail.com | Phone: +91 62940 67811",
+      "media": [],
+      "sort_order": 7
+    }
+  ],
+  "projects": [
+    {
+      "id": 12,
+      "title": "OCHats",
+      "slug": "ochats",
+      "description": "Omnichannel Customer Communication CRM SaaS allowing businesses to manage customer conversations across 14+ messaging platforms (WhatsApp, Messenger, Instagram, LINE, WeChat, Email) from a single inbox. Features visual drag-and-drop workflow builders (Drawflow), timezone-aware queue broadcasts, contact intelligence/merging, and Stripe subscription systems.",
+      "tech_stack": ["Laravel", "PHP", "MySQL", "Livewire", "Redis", "Stripe"],
+      "media": [{"url": "/uploads/ochats.png", "name": "ochats.png", "type": "image"}],
+      "live_url": "https://www.app.ochats.io/",
+      "repo_url": "#",
+      "featured": true,
+      "status": "published",
+      "sort_order": 1,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 13,
+      "title": "Runway Hive",
+      "slug": "runway-hive",
+      "description": "Global fashion-tech portal and e-commerce marketplace connecting models, designers, and photographers. Features advanced profile management, points-based rewards economy (gamification), multi-step job board and hiring dashboards, location-aware filters, and secure payments via Stripe and PayPal.",
+      "tech_stack": ["Next.js", "React", "Node.js", "MongoDB", "Mongoose", "Stripe", "PayPal"],
+      "media": [{"url": "/uploads/runwayhive.png", "name": "runwayhive.png", "type": "image"}],
+      "live_url": "https://runwayhive.com/",
+      "repo_url": "#",
+      "featured": true,
+      "status": "published",
+      "sort_order": 2,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 14,
+      "title": "Maneuver",
+      "slug": "maneuver",
+      "description": "On-demand courier delivery shipment platform featuring multi-stop route optimization, real-time GPS tracking (Socket.IO + Redis), intelligent proximity driver matching, dynamic pricing, and Stripe Identity document verification.",
+      "tech_stack": ["Node.js", "Express", "MySQL", "Sequelize", "Socket.io", "Redis", "Stripe Connect"],
+      "media": [{"url": "/uploads/maneuver.png", "name": "maneuver.png", "type": "image"}],
+      "live_url": "https://maneuver.live",
+      "repo_url": "#",
+      "featured": true,
+      "status": "published",
+      "sort_order": 3,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 15,
+      "title": "ACC – SaaS Learning Management System",
+      "slug": "acc-lms",
+      "description": "A SaaS-based education management ecosystem with Web app, mobile app, and admin portal enabling schools to manage students, courses, batches, attendance, exams, assignments, fees, results, and notifications.",
+      "tech_stack": ["Laravel", "Livewire", "MySQL", "Bootstrap"],
+      "media": [{"url": "/uploads/acc_lms.png", "name": "acc_lms.png", "type": "image"}],
+      "live_url": "#",
+      "repo_url": "#",
+      "featured": true,
+      "status": "published",
+      "sort_order": 4,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 16,
+      "title": "Ayan Chakraborty Classes LMS",
+      "slug": "ayan-classes",
+      "description": "Coaching institute Learning Management System featuring custom Zoom API live class scheduling, media video hosting on AWS S3 & Cloudflare R2, SMS alerts via Vonage, dynamic PDF assignments, and school reporting tools.",
+      "tech_stack": ["Laravel 12", "Livewire 3", "Tailwind CSS", "Alpine.js", "AWS S3", "Cloudflare R2"],
+      "media": [{"url": "/uploads/ayanclasses.png", "name": "ayanclasses.png", "type": "image"}],
+      "live_url": "https://admin.ayanchakrabortyclasses.co.in/admin/login",
+      "repo_url": "#",
+      "featured": true,
+      "status": "published",
+      "sort_order": 5,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 17,
+      "title": "Leroi Lead Operations Platform",
+      "slug": "leroi",
+      "description": "Enterprise lead and operations management platform streamlining lead tracking, workflow automation, customer engagement, visual pipeline dashboards, team communication, and automated sales reporting.",
+      "tech_stack": ["Laravel", "Livewire", "PHP", "Tailwind CSS", "MySQL"],
+      "media": [{"url": "/uploads/leroi.png", "name": "leroi.png", "type": "image"}],
+      "live_url": "#",
+      "repo_url": "#",
+      "featured": true,
+      "status": "published",
+      "sort_order": 6,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    }
+  ],
+  "certificates": [
+    {
+      "id": 6,
+      "title": "Lead Backend Developer Certification",
+      "issuer": "Inforoot Solution",
+      "issued_at": "2025-09-01",
+      "credential_id": "LEAD-BEND-09",
+      "credential_url": "#",
+      "description": "Recognition of leading backend architecture, REST API design, and system engineering.",
+      "media": [],
+      "sort_order": 1,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 7,
+      "title": "SaaS Architecture & Project Delivery",
+      "issuer": "Notebrains Software",
+      "issued_at": "2025-03-01",
+      "credential_id": "SAAS-PROJ-03",
+      "credential_url": "#",
+      "description": "Design and delivery of multi-tenant platforms, socket tracking, and billing integrations.",
+      "media": [],
+      "sort_order": 2,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    }
+  ],
+  "courses": [
+    {
+      "id": 7,
+      "title": "Omnichannel Message Routing Systems",
+      "provider": "Internal Training",
+      "description": "Architecting multi-platform message normalization engines and webhook handlers.",
+      "started_at": "2024-01-01",
+      "completed_at": "2024-03-01",
+      "link": "#",
+      "media": [],
+      "sort_order": 1,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    },
+    {
+      "id": 8,
+      "title": "Real-time Socket.io & Redis Caching",
+      "provider": "Advanced Technical Hub",
+      "description": "Deploying Redis cache to minimize database hits in high-frequency location queries.",
+      "started_at": "2023-06-01",
+      "completed_at": "2023-08-01",
+      "link": "#",
+      "media": [],
+      "sort_order": 2,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    }
+  ],
+  "education": [
+    {
+      "id": 5,
+      "institution": "Techno India (Hooghly Campus)",
+      "degree": "Bachelor of Computer Application (BCA)",
+      "field_of_study": "Computer Application",
+      "start_year": 2017,
+      "end_year": 2020,
+      "description": "Acquired base computer science knowledge, relational databases, web scripting languages, and application development fundamentals.",
+      "link": "https://admin.ayanchakrabortyclasses.co.in/",
+      "media": [],
+      "sort_order": 1,
+      "created_at": "2026-06-09T15:32:13Z",
+      "updated_at": "2026-06-09T15:32:13Z"
+    }
+  ]
+}

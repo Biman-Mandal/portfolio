@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [dbStatus, setDbStatus] = useState("Checking connection...");
 
   const filteredItems = useMemo(() => {
     return filter === "all" ? items : items.filter((item) => item.type === filter);
@@ -48,12 +49,16 @@ export default function AdminDashboard() {
     try {
       const response = await fetch("/api/content", { cache: "no-store" });
       if (!response.ok) {
-        setMessage("MySQL is not connected yet. Import schema.sql and check .env.local.");
+        setMessage("Database connection failed. Please check your configurations.");
+        setDbStatus("Disconnected");
         return;
       }
       setItems(await response.json());
+      const statusHeader = response.headers.get("x-database-status") || "Connected";
+      setDbStatus(statusHeader);
     } catch {
-      setMessage("MySQL is not connected yet. Import schema.sql and check .env.local.");
+      setMessage("Database connection failed. Please check your configurations.");
+      setDbStatus("Disconnected");
     }
   }
 
@@ -151,7 +156,7 @@ export default function AdminDashboard() {
     });
 
     if (!response.ok) {
-      setMessage("Save failed. Check MySQL setup and admin password.");
+      setMessage("Save failed. Check database configurations and admin password.");
       setBusy(false);
       return;
     }
@@ -176,7 +181,7 @@ export default function AdminDashboard() {
     });
 
     if (!response.ok) {
-      setMessage("Save failed. Check MySQL setup and admin password.");
+      setMessage("Save failed. Check database configurations and admin password.");
       setBusy(false);
       return;
     }
@@ -338,7 +343,7 @@ export default function AdminDashboard() {
               <div className="admin-toolbar">
                 <div>
                   <h2>Content List</h2>
-                  <p className="meta">{filteredItems.length} records shown from MySQL.</p>
+                  <p className="meta">{filteredItems.length} records shown. Engine: <strong>{dbStatus}</strong></p>
                 </div>
                 <select className="select" value={filter} onChange={(event) => setFilter(event.target.value)} aria-label="Filter content">
                   <option value="all">All sections</option>
@@ -502,7 +507,7 @@ export default function AdminDashboard() {
                 <p>
                   Delete <strong>{deleteTarget.title}</strong> from {typeLabels[deleteTarget.type]}?
                 </p>
-                <p className="text-muted mb-0">This removes the record from MySQL. Uploaded files stay in public/uploads.</p>
+                <p className="text-muted mb-0">This removes the record from the database ({dbStatus}). Uploaded files stay in public/uploads.</p>
               </div>
               <div className="modal-footer">
                 {message ? <span className="text-muted me-auto">{message}</span> : null}
