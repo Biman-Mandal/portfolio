@@ -75,6 +75,12 @@ async function runWithFallback(opName, supabaseOp, mysqlOp, staticOp) {
       return await supabaseOp();
     } catch (err) {
       console.warn(`Supabase operation '${opName}' failed. Falling back to local static data. Error:`, err);
+      try {
+        return await staticOp();
+      } catch (fallbackErr) {
+        console.error(`Static fallback failed after Supabase error:`, fallbackErr);
+        throw err;
+      }
     }
   }
 
@@ -83,6 +89,12 @@ async function runWithFallback(opName, supabaseOp, mysqlOp, staticOp) {
       return await mysqlOp();
     } catch (err) {
       console.warn(`MySQL operation '${opName}' failed. Falling back to local static data. Error:`, err);
+      try {
+        return await staticOp();
+      } catch (fallbackErr) {
+        console.error(`Static fallback failed after MySQL error:`, fallbackErr);
+        throw err;
+      }
     }
   }
 
@@ -228,6 +240,8 @@ export async function getAllPortfolioContent() {
               title: contactSection?.title || "Contact",
               description: contactSection?.description || `Email: ${profile.email || ""} | Phone: ${profile.phone || ""}`,
               link: profile.email ? `mailto:${profile.email}` : profile.resume_url || "",
+              email: profile.email || "",
+              phone: profile.phone || "",
               location: profile.location || "",
               map_embed_url: profile.map_embed_url || "",
               media: parseMedia(contactSection?.media),
@@ -271,6 +285,8 @@ export async function getAllPortfolioContent() {
               title: contactSection?.title || "Contact",
               description: contactSection?.description || `Email: ${profile.email || ""} | Phone: ${profile.phone || ""}`,
               link: profile.email ? `mailto:${profile.email}` : profile.resume_url || "",
+              email: profile.email || "",
+              phone: profile.phone || "",
               location: profile.location || "",
               map_embed_url: profile.map_embed_url || "",
               media: parseMedia(contactSection?.media),
@@ -319,6 +335,8 @@ export async function getAllPortfolioContent() {
               title: contactSection?.title || "Contact",
               description: contactSection?.description || `Email: ${profile.email || ""} | Phone: ${profile.phone || ""}`,
               link: profile.email ? `mailto:${profile.email}` : profile.resume_url || "",
+              email: profile.email || "",
+              phone: profile.phone || "",
               location: profile.location || "",
               map_embed_url: profile.map_embed_url || "",
               media: parseMedia(contactSection?.media),
