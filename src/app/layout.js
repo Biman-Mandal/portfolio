@@ -1,7 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import Head from "next/head";
 import CursorFollower from "@/components/CursorFollower";
 import ThreeHero from "@/components/ThreeHero";
 import ScrollSectionHandler from "@/components/ScrollSectionHandler";
@@ -21,9 +20,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${sansFont.variable}`} data-theme="light" suppressHydrationWarning>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <body className="font-sans-active">
         <ThreeHero />
         <ScrollSectionHandler />
