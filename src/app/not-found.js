@@ -14,15 +14,7 @@ export default function NotFound() {
       <p style={{ color: "var(--muted)", maxWidth: "400px", margin: "0 0 30px", lineHeight: "1.6" }}>
         The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
       </p>
-      <a href="/" style={{ 
-        color: "#ffffff", 
-        background: "var(--accent)", 
-        padding: "10px 24px", 
-        borderRadius: "8px", 
-        fontWeight: "600",
-        boxShadow: "0 4px 14px rgba(24, 213, 181, 0.4)",
-        transition: "transform 0.2s ease"
-      }}>
+      <a href="/" className="btn primary">
         Return Home
       </a>
     </div>

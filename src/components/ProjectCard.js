@@ -31,7 +31,7 @@ export default function ProjectCard({ item, delayClass }) {
                   padding: "3px 8px",
                   borderRadius: 6,
                   background: "var(--panel-strong)",
-                  border: "1px solid var(--line)",
+                  border: "0.5px solid var(--line)",
                   color: "var(--accent)"
                 }}
               >

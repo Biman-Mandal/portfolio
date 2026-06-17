@@ -18,7 +18,7 @@ export const viewport = {
 
 export const metadata = {
   title: "Professional Full Stack Developer Portfolio | Next.js & Three.js",
-  description: "Browse full stack web development projects, credentials, and courses. Powered by an interactive 3D hero scene and MySQL backend.",
+  description: "Browse full stack web development projects, credentials, and courses. Powered by an interactive 3D hero scene and local JSON database.",
   robots: "index, follow"
 };
 
@@ -46,9 +46,9 @@ export default async function Home() {
   return (
     <main className="site-shell">
       <nav className="top-nav">
-        <a className="brand" href="#home" id="brand-logo-link">
-          <span className="brand-mark">FS</span>
-          <span>Portfolio</span>
+        <a className="brand" href="#home" id="brand-logo-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img src="/logo.jpg" alt="BM Logo" style={{ height: "30px", width: "30px", borderRadius: "6px", objectFit: "cover" }} />
+          <span>Biman Mandal</span>
         </a>
         <div className="nav-links">
           <a href="#projects" id="nav-projects-link">Projects</a>
@@ -61,7 +61,7 @@ export default async function Home() {
       <section id="home" className="hero">
         <div className="hero-layout">
           <div className="hero-content">
-            <span className="eyebrow reveal">Senior Software Developer | Full Stack Engineer | Building SaaS, CRM & Enterprise Applications</span>
+            <span className="eyebrow reveal">Senior Software Developer | Full Stack Engineer </span>
             <h1 className="reveal reveal-delay-1">{intro.title}</h1>
             <p className="reveal reveal-delay-2">{intro.description}</p>
             <div className="hero-actions reveal reveal-delay-3">
@@ -124,7 +124,7 @@ export default async function Home() {
       ) : null}
 
       <ContactSection contact={contact} />
-      <footer className="footer">Built with Next.js, Three.js, and MySQL.</footer>
+      <footer className="footer">Built with Next.js, Three.js, and Local JSON Database.</footer>
     </main>
   );
 }

@@ -222,8 +222,8 @@ export default function AdminDashboard() {
     <main className="admin-shell">
       <div className="admin-layout">
         <aside className="admin-sidebar">
-          <div className="admin-logo">
-            <span className="brand-mark">FS</span>
+          <div className="admin-logo" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <img src="/logo.jpg" alt="BM Logo" style={{ height: "30px", width: "30px", borderRadius: "6px", objectFit: "cover" }} />
             <span>Portfolio CMS</span>
           </div>
           <nav className="admin-nav" aria-label="Admin sections">

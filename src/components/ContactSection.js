@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Download } from "lucide-react";
 
 export default function ContactSection({ contact }) {
   if (!contact) return null;
@@ -15,6 +15,40 @@ export default function ContactSection({ contact }) {
   const whatsappLink = `https://wa.me/${whatsappNumber}`;
 
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [formStatus, setFormStatus] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus("sending");
+
+    const formData = new FormData(e.target);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message")
+    };
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/bimanm193@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        setFormStatus("success");
+        e.target.reset();
+      } else {
+        setFormStatus("error");
+      }
+    } catch (err) {
+      console.error("FormSubmit Error:", err);
+      setFormStatus("error");
+    }
+  };
 
   const cardStyle = {
     display: "flex",
@@ -23,7 +57,7 @@ export default function ContactSection({ contact }) {
     padding: "1.25rem 1.5rem",
     borderRadius: "16px",
     background: "var(--panel-strong)",
-    border: "1px solid var(--line)",
+    border: "0.5px solid var(--line)",
     boxShadow: "var(--card-shadow)",
     textDecoration: "none",
     color: "var(--ink)",
@@ -43,7 +77,7 @@ export default function ContactSection({ contact }) {
   };
 
   return (
-    <section id="contact" className="section alt" style={{ borderTop: "1px solid var(--line)", background: "var(--bg-alt)" }}>
+    <section id="contact" className="section alt" style={{ borderTop: "0.5px solid var(--line)", background: "var(--bg-alt)" }}>
       <div className="section-header reveal" style={{ textAlign: "center", marginBottom: "3rem" }}>
         <div style={{ margin: "0 auto" }}>
           <h2 style={{ textAlign: "center" }}>{contact.title || "Contact"}</h2>
@@ -178,23 +212,98 @@ export default function ContactSection({ contact }) {
             </a>
           )}
 
+          {/* LinkedIn Card */}
+          <a 
+            href={contact.linkedin_url || "https://www.linkedin.com/in/im-bimanmandal/"} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={getCardStyle("linkedin")}
+            onMouseEnter={() => setHoveredCard("linkedin")}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "52px",
+              height: "52px",
+              borderRadius: "12px",
+              background: "rgba(10, 102, 194, 0.12)",
+              color: "#0A66C2",
+              flexShrink: 0
+            }}>
+              <Linkedin size={22} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>LinkedIn</span>
+              <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--ink)" }}>Connect on LinkedIn</span>
+            </div>
+          </a>
+
+          {/* Resume Card */}
+          <a 
+            href={contact.resume_url && contact.resume_url !== "#" ? contact.resume_url : "/resume.pdf"} 
+            download
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={getCardStyle("resume")}
+            onMouseEnter={() => setHoveredCard("resume")}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "52px",
+              height: "52px",
+              borderRadius: "12px",
+              background: "rgba(139, 92, 246, 0.12)",
+              color: "var(--accent-2)",
+              flexShrink: 0
+            }}>
+              <Download size={22} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Resume</span>
+              <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--ink)" }}>Download Resume</span>
+            </div>
+          </a>
+
         </div>
 
         {/* Right side: Contact Form */}
-        <form className="contact-form" style={{ flex: "1 1 400px", background: "var(--panel-strong)", border: "1px solid var(--line)", padding: "2rem", borderRadius: "16px", boxShadow: "var(--card-shadow)", display: "flex", flexDirection: "column", justifyContent: "center" }} onSubmit={e => { e.preventDefault(); }}>
+        <form className="contact-form" style={{ flex: "1 1 400px", background: "var(--panel-strong)", border: "0.5px solid var(--line)", padding: "2rem", borderRadius: "16px", boxShadow: "var(--card-shadow)", display: "flex", flexDirection: "column", justifyContent: "center" }} onSubmit={handleSubmit}>
           <div className="form-group" style={{ marginBottom: "1.25rem" }}>
             <label htmlFor="name" style={{ display: "block", marginBottom: ".5rem", fontSize: "14px", fontWeight: 500, color: "var(--muted)" }}>Name</label>
-            <input type="text" id="name" name="name" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none" }} />
+            <input type="text" id="name" name="name" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "0.5px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none" }} />
           </div>
           <div className="form-group" style={{ marginBottom: "1.25rem" }}>
             <label htmlFor="email" style={{ display: "block", marginBottom: ".5rem", fontSize: "14px", fontWeight: 500, color: "var(--muted)" }}>Email</label>
-            <input type="email" id="email" name="email" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none" }} />
+            <input type="email" id="email" name="email" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "0.5px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none" }} />
           </div>
           <div className="form-group" style={{ marginBottom: "1.5rem" }}>
             <label htmlFor="message" style={{ display: "block", marginBottom: ".5rem", fontSize: "14px", fontWeight: 500, color: "var(--muted)" }}>Message</label>
-            <textarea id="message" name="message" rows="4" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none", resize: "vertical" }}></textarea>
+            <textarea id="message" name="message" rows="10" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "0.5px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none", resize: "vertical" }}></textarea>
           </div>
-          <button type="submit" className="btn primary" style={{ width: "100%", padding: "1rem", borderRadius: "8px", background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontSize: "16px", fontWeight: 600, transition: "all 0.3s" }}>Send Message</button>
+          <button type="submit" className="btn primary" style={{ width: "100%", padding: "1rem" }} disabled={formStatus === "sending"}>
+            {formStatus === "sending" ? "Sending..." : "Send Message"}
+          </button>
+
+          {formStatus === "sending" && (
+            <p style={{ marginTop: "12px", fontSize: "14px", color: "var(--accent-2)", fontWeight: 500, textAlign: "center" }}>
+              Sending message...
+            </p>
+          )}
+          {formStatus === "success" && (
+            <p style={{ marginTop: "12px", fontSize: "14px", color: "#10b981", fontWeight: 500, textAlign: "center" }}>
+              Message sent successfully! FormSubmit will send an activation email to confirm this endpoint on first use.
+            </p>
+          )}
+          {formStatus === "error" && (
+            <p style={{ marginTop: "12px", fontSize: "14px", color: "var(--danger)", fontWeight: 500, textAlign: "center" }}>
+              Failed to send message. Please try again.
+            </p>
+          )}
         </form>
 
       </div>

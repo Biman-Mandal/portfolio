@@ -2,9 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { usePathname } from "next/navigation";
 
 export default function ThreeHero() {
   const mountRef = useRef(null);
+  const pathname = usePathname();
+
+  // Hide the canvas on sub-pages
+  if (pathname !== "/") {
+    return null;
+  }
 
   useEffect(() => {
     const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
@@ -17,7 +24,7 @@ export default function ThreeHero() {
     // 1. Scene & Renderer Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
-    camera.position.set(0, 3.5, 8.5); // Initial position
+    camera.position.set(0, 3.5, 8.5);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -26,7 +33,6 @@ export default function ThreeHero() {
     const group = new THREE.Group();
     scene.add(group);
 
-    // Helper: Generate a high-quality circular radial glow texture programmatically
     const createParticleTexture = () => {
       const canvas = document.createElement("canvas");
       canvas.width = 32;
@@ -42,103 +48,195 @@ export default function ThreeHero() {
       return new THREE.CanvasTexture(canvas);
     };
 
-    // 2. Central Morphing Glass Sphere (Refractive Nucleus)
-    const coreGeometry = new THREE.IcosahedronGeometry(1.2, 2);
-    const originalPositions = coreGeometry.attributes.position.array.slice();
-
-    const coreMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xe0f2fe,
-      roughness: 0.1,
-      metalness: 0.2,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1,
+    // 2. Central Glowing Core & Halo
+    const coreGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+    const coreMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
       transparent: true,
-      opacity: 0.55,
-      side: THREE.DoubleSide
+      opacity: 0.95
     });
+    const glowingCore = new THREE.Mesh(coreGeometry, coreMaterial);
+    group.add(glowingCore);
 
-    const core = new THREE.Mesh(coreGeometry, coreMaterial);
-    group.add(core);
-
-    // 3. Inner Glowing Sphere
-    const innerGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-    const innerMaterial = new THREE.MeshBasicMaterial({
-      color: 0x1d4ed8,
+    const haloGeometry = new THREE.SphereGeometry(0.32, 16, 16);
+    const haloMaterial = new THREE.MeshBasicMaterial({
+      color: 0x8b5cf6,
       transparent: true,
-      opacity: 0.85
+      opacity: 0.25,
+      blending: THREE.AdditiveBlending
     });
-    const innerCore = new THREE.Mesh(innerGeometry, innerMaterial);
-    group.add(innerCore);
+    const glowingHalo = new THREE.Mesh(haloGeometry, haloMaterial);
+    group.add(glowingHalo);
 
-    // 4. Orbiting Rings
-    const ringMaterial = new THREE.MeshBasicMaterial({
-      color: 0x94a3b8,
-      transparent: true,
-      opacity: 0.15
-    });
-    const satelliteGeom = new THREE.SphereGeometry(0.05, 8, 8);
-    const satellites = [];
-
-    for (let i = 0; i < 3; i++) {
-      const radius = 1.8 + i * 0.6;
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.006, 6, 60), ringMaterial);
-      ring.rotation.x = Math.PI / 2 + (i * 0.2);
-      group.add(ring);
-
-      const satMat = new THREE.MeshBasicMaterial({
-        color: 0xeab308,
-        transparent: true,
-        opacity: 0.8
+    // 3. Holographic Tech Grid Floor (y = -1.6)
+    const techGrid = new THREE.GridHelper(8, 16, 0x8b5cf6, 0x334155);
+    techGrid.position.y = -1.6;
+    if (Array.isArray(techGrid.material)) {
+      techGrid.material.forEach(m => {
+        m.transparent = true;
+        m.opacity = 0.18;
       });
-      const sat = new THREE.Mesh(satelliteGeom, satMat);
-      group.add(sat);
+    } else {
+      techGrid.material.transparent = true;
+      techGrid.material.opacity = 0.18;
+    }
+    group.add(techGrid);
 
-      satellites.push({
-        mesh: sat,
-        radius,
-        speed: 0.5 + i * 0.3,
-        angle: Math.random() * Math.PI * 2,
-        rotX: ring.rotation.x
+    // 4. Coordinate Orbit Rings
+    const orbitRings = [];
+    const ringGeometries = [];
+    const ringMaterials = [];
+    for (let i = 0; i < 2; i++) {
+      const r = 1.1 + i * 0.55;
+      const ringGeom = new THREE.RingGeometry(r, r + 0.006, 48);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0x4f46e5,
+        transparent: true,
+        opacity: 0.16,
+        side: THREE.DoubleSide
+      });
+      const ring = new THREE.Mesh(ringGeom, ringMat);
+      ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+      ring.rotation.y = (Math.random() - 0.5) * 0.3;
+      group.add(ring);
+      orbitRings.push({ mesh: ring, speed: (i === 0 ? 0.08 : -0.05) });
+      ringGeometries.push(ringGeom);
+      ringMaterials.push(ringMat);
+    }
+
+    // 5. Floating Interconnected Tech Nodes (APIs, Databases, Cloud Services, Microservices)
+    const techNodes = [];
+    const nodeCount = 24;
+    const geometries = [
+      new THREE.BoxGeometry(0.12, 0.12, 0.12),       // Database (Cube)
+      new THREE.OctahedronGeometry(0.085, 0),        // API (Octahedron)
+      new THREE.DodecahedronGeometry(0.085, 0),      // Cloud (Dodecahedron)
+      new THREE.TetrahedronGeometry(0.085, 0)        // Microservice (Tetrahedron)
+    ];
+
+    const purpleNodeMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x8b5cf6,
+      roughness: 0.1,
+      metalness: 0.9,
+      clearcoat: 1.0,
+      transparent: true,
+      opacity: 0.85,
+      emissive: 0x8b5cf6,
+      emissiveIntensity: 0.35
+    });
+
+    const indigoNodeMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x4f46e5,
+      roughness: 0.1,
+      metalness: 0.9,
+      clearcoat: 1.0,
+      transparent: true,
+      opacity: 0.85,
+      emissive: 0x4f46e5,
+      emissiveIntensity: 0.35
+    });
+
+    const materials = [purpleNodeMaterial, indigoNodeMaterial];
+
+    for (let i = 0; i < nodeCount; i++) {
+      const geom = geometries[i % geometries.length];
+      const mat = materials[i % materials.length];
+      const mesh = new THREE.Mesh(geom, mat);
+      
+      const orbitRadius = 0.8 + Math.random() * 1.55;
+      const speed = 0.14 + Math.random() * 0.32;
+      const angle = Math.random() * Math.PI * 2;
+      
+      const axis = new THREE.Vector3(
+        (Math.random() - 0.5) * 0.5,
+        (Math.random() - 0.5) * 1.0,
+        (Math.random() - 0.5) * 0.5
+      ).normalize();
+      
+      group.add(mesh);
+      techNodes.push({
+        mesh,
+        orbitRadius,
+        speed,
+        angle,
+        axis,
+        color: mat.color
       });
     }
 
-    // 5. Scroll-linked Morphing Formations (600 Particles)
-    const particleCount = 600; 
+    // 6. Connective Lines
+    const maxConnections = 120;
+    const linePositions = new Float32Array(maxConnections * 2 * 3);
+    const lineColors = new Float32Array(maxConnections * 2 * 3);
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
+    lineGeometry.setAttribute("color", new THREE.BufferAttribute(lineColors, 3));
 
+    const lineMaterial = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
+      linewidth: 1
+    });
+
+    const neonLines = new THREE.LineSegments(lineGeometry, lineMaterial);
+    group.add(neonLines);
+
+    // 7. Flowing Data Packets (flowing along active connections)
+    const packets = [];
+    const packetCount = 12;
+    const packetGeometry = new THREE.SphereGeometry(0.016, 8, 8);
+    const packetMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending
+    });
+
+    for (let i = 0; i < packetCount; i++) {
+      const mesh = new THREE.Mesh(packetGeometry, packetMaterial);
+      group.add(mesh);
+
+      // Random starting nodes
+      const fromIdx = Math.floor(Math.random() * techNodes.length);
+      let toIdx = (fromIdx + 1) % techNodes.length;
+      
+      packets.push({
+        mesh,
+        fromNode: techNodes[fromIdx],
+        toNode: techNodes[toIdx],
+        progress: Math.random(),
+        speed: 0.008 + Math.random() * 0.015
+      });
+    }
+
+    // 8. Scroll-linked Morphing Background Particles (600 Particles representing raw data)
+    const particleCount = 600; 
     const particlesGeometry = new THREE.BufferGeometry();
-    
-    // Arrays for active particle rendering attributes
     const activePositions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    // Precomputed formations coordinate arrays
     const posGrid = new Float32Array(particleCount * 3);
     const posHelix = new Float32Array(particleCount * 3);
     const posHelixAngle = new Float32Array(particleCount);
-    
-    // Vortex parameter caches (reused for Stage 4 Digital Rain)
     const posVortexRadius = new Float32Array(particleCount);
     const posVortexAngle = new Float32Array(particleCount);
     const posVortexY = new Float32Array(particleCount);
-
-    // Cyber Data Tunnel parameter caches (Stage 3)
     const posTunnelAngle = new Float32Array(particleCount);
     const posTunnelRadius = new Float32Array(particleCount);
     const posTunnelZ = new Float32Array(particleCount);
-
-    // Gyroscope HUD parameters (Stage 0)
     const particleAngles = new Float32Array(particleCount);
     const particleRadii = new Float32Array(particleCount);
 
-    // Professional Steel Teal/Blue vs Slate Indigo/Gold color combinations
     const colorCombos = {
       combo1: {
-        light: [new THREE.Color(0x0f766e), new THREE.Color(0x1d4ed8), new THREE.Color(0x0284c7)],
-        dark: [new THREE.Color(0x14b8a6), new THREE.Color(0x3b82f6), new THREE.Color(0x0ea5e9)]
+        light: [new THREE.Color(0x8b5cf6), new THREE.Color(0x4f46e5), new THREE.Color(0xa855f7)],
+        dark: [new THREE.Color(0x8b5cf6), new THREE.Color(0x4f46e5), new THREE.Color(0xa855f7)]
       },
       combo2: {
-        light: [new THREE.Color(0x4338ca), new THREE.Color(0xb45309), new THREE.Color(0x1e3a8a)],
-        dark: [new THREE.Color(0x6366f1), new THREE.Color(0xfbbf24), new THREE.Color(0x4f46e5)]
+        light: [new THREE.Color(0x8b5cf6), new THREE.Color(0x4f46e5), new THREE.Color(0xa855f7)],
+        dark: [new THREE.Color(0x8b5cf6), new THREE.Color(0x4f46e5), new THREE.Color(0xa855f7)]
       }
     };
 
@@ -170,22 +268,19 @@ export default function ThreeHero() {
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
       
-      // 1. Gyroscope HUD parameters (Stage 0)
       const ringIndex = i % 3;
-      const r = 1.8 + ringIndex * 0.6 + (Math.random() - 0.5) * 0.15;
+      const r = 1.15 + ringIndex * 0.4 + (Math.random() - 0.5) * 0.12;
       const angle = Math.random() * Math.PI * 2;
       particleRadii[i] = r;
       particleAngles[i] = angle;
 
-      // 2. Data Streams parameters (Stage 1)
       const level = (i % 6) - 2.5;
       const streamX = ((i / 6) % 100 - 50) * 0.12;
       posGrid[i3] = streamX;
       posGrid[i3 + 1] = level * 0.8 + (Math.random() - 0.5) * 0.05;
       posGrid[i3 + 2] = (Math.random() - 0.5) * 1.5;
 
-      // 3. Helix coordinates (Stage 2)
-      const helixAngle = (i / particleCount) * Math.PI * 8; // 4 full turns
+      const helixAngle = (i / particleCount) * Math.PI * 8;
       posHelixAngle[i] = helixAngle;
       const isArmA = (i % 2 === 0);
       const factor = isArmA ? 1 : -1;
@@ -194,8 +289,7 @@ export default function ThreeHero() {
       posHelix[i3 + 1] = (i / particleCount - 0.5) * 6.5;
       posHelix[i3 + 2] = Math.sin(helixAngle) * hRadius * factor;
 
-      // 4. Cyber Data Tunnel parameters (Stage 3)
-      const ringGroup = i % 8; // 8 segments along Z
+      const ringGroup = i % 8;
       const tunnelZ = (ringGroup - 3.5) * 1.2;
       const tunnelAngle = (i / particleCount) * Math.PI * 2 * (particleCount / 8);
       const tunnelRadius = 2.2 + (Math.random() - 0.5) * 0.15;
@@ -203,14 +297,12 @@ export default function ThreeHero() {
       posTunnelRadius[i] = tunnelRadius;
       posTunnelZ[i] = tunnelZ;
 
-      // 5. Digital Rain parameters (Stage 4)
       const vr = Math.sqrt(Math.random()) * 3.5 + 0.3;
       const vAngle = Math.random() * Math.PI * 2;
       posVortexRadius[i] = vr;
       posVortexAngle[i] = vAngle;
       posVortexY[i] = (Math.random() - 0.5) * 6.0;
 
-      // Initial active positions (Gyroscope HUD rings on X-Z, Y-Z, X-Y planes)
       if (ringIndex === 0) {
         activePositions[i3] = Math.cos(angle) * r;
         activePositions[i3 + 1] = 0;
@@ -236,11 +328,11 @@ export default function ThreeHero() {
     particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.14,
+      size: 0.065,
       map: createParticleTexture(),
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.6,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
@@ -248,15 +340,20 @@ export default function ThreeHero() {
     const galaxyParticles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(galaxyParticles);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.25));
-    const light1 = new THREE.PointLight(activePalette[0], 15, 25);
-    light1.position.set(5, 5, 5);
+    // 9. Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+    const coreLight = new THREE.PointLight(0x8b5cf6, 20, 20);
+    coreLight.position.set(0, 0, 0);
+    scene.add(coreLight);
+
+    const light1 = new THREE.PointLight(activePalette[0], 12, 25);
+    light1.position.set(4, 4, 4);
     scene.add(light1);
-    const light2 = new THREE.PointLight(activePalette[1], 12, 20);
-    light2.position.set(-5, -3, 4);
+    const light2 = new THREE.PointLight(activePalette[1], 10, 20);
+    light2.position.set(-4, -2, 4);
     scene.add(light2);
-    const mouseLight = new THREE.PointLight(activePalette[2], 10, 12);
-    mouseLight.position.set(0, 0, 3);
+    const mouseLight = new THREE.PointLight(activePalette[2], 8, 10);
+    mouseLight.position.set(0, 0, 2.5);
     scene.add(mouseLight);
 
     let colorTransitionFrames = 0;
@@ -288,7 +385,6 @@ export default function ThreeHero() {
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseleave", () => { mouse.active = false; });
 
-    // Caching window and document dimensions for reflow-free scroll computations
     let viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
     let documentHeight = typeof document !== "undefined" ? document.documentElement.scrollHeight : 0;
     let maxScroll = documentHeight - viewportHeight;
@@ -345,7 +441,6 @@ export default function ThreeHero() {
     };
     window.addEventListener("resize", resize);
 
-    // Make an initial update to cache the dimensions and sync the scroll progress properly
     updateHeights();
     onScroll();
 
@@ -356,7 +451,7 @@ export default function ThreeHero() {
       }
       frameCount++;
       const elapsed = clock.getElapsedTime();
-      const timeFactor = elapsed * 0.6;
+      const timeFactor = elapsed * 0.5;
       introSpinFactor += (1.0 - introSpinFactor) * 0.018;
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
@@ -374,37 +469,123 @@ export default function ThreeHero() {
       const activeStage = Math.floor(t);
       const stageProgress = t - activeStage;
 
+      // Scroll camera paths
       camera.position.x += ( (t < 2 ? mouse.x * 1.5 : (t < 3 ? mouse.x * 1.5 + (t-2)*2 : 0)) - camera.position.x) * 0.05;
       camera.lookAt(0, (t < 1 ? stageProgress * 0.3 : (t < 2 ? 0.3 - 0.3*(t-1) : (t < 3 ? (t-2)*-0.5 : -0.5 + (t-3)*1.0))), 0);
 
       group.position.x += ( (t < 1 ? (window.innerWidth < 800 ? 0 : 2.2) - stageProgress * (window.innerWidth < 800 ? 1.5 : 4.8) : 0) - group.position.x) * 0.05;
       
-      const scaleVal = core.scale.x + ((t < 1 ? 1.0 - stageProgress * 0.45 : (t < 2 ? 0.55 + 0.15*(t-1) : 0.5)) - core.scale.x) * 0.05;
-      core.scale.set(scaleVal, scaleVal, scaleVal);
+      // Core pulses
+      const corePulse = 1.0 + Math.sin(timeFactor * 3.6) * 0.12;
+      glowingCore.scale.set(corePulse, corePulse, corePulse);
+      glowingHalo.scale.set(corePulse * 1.25, corePulse * 1.25, corePulse * 1.25);
 
-      core.rotation.y = timeFactor * 0.15 * introSpinFactor;
-      innerCore.rotation.x = -timeFactor * 0.25 * introSpinFactor;
-      const pulse = 1.0 + Math.sin(timeFactor * 1.8 * introSpinFactor) * 0.06;
-      innerCore.scale.set(pulse, pulse, pulse);
-
-      // Update orbits
-      satellites.forEach((sat) => {
-        sat.angle += sat.speed * 0.012 * introSpinFactor;
-        sat.mesh.position.set(
-          Math.cos(sat.angle) * sat.radius,
-          Math.sin(sat.angle * 0.5) * 0.15,
-          Math.sin(sat.angle) * sat.radius
-        );
-        sat.mesh.position.applyAxisAngle(new THREE.Vector3(1, 0, 0), sat.rotX);
-        sat.mesh.material.color.lerp(targetColors.light2, 0.04);
+      // Rotate grid and orbit rings
+      techGrid.rotation.y = timeFactor * 0.06;
+      orbitRings.forEach(ring => {
+        ring.mesh.rotation.z += ring.speed * 0.01 * introSpinFactor;
       });
 
-      // Smooth lights and materials color transitions
-      innerCore.material.color.lerp(targetColors.innerCore, 0.04);
+      // Orbiting node movements
+      techNodes.forEach((node) => {
+        node.angle += node.speed * 0.008 * introSpinFactor;
+        
+        const right = new THREE.Vector3(1, 0, 0).cross(node.axis).normalize();
+        if (right.lengthSq() < 0.001) right.set(0, 1, 0);
+        const orthogonal = new THREE.Vector3().crossVectors(node.axis, right).normalize();
+        
+        node.mesh.position.copy(right).multiplyScalar(Math.cos(node.angle) * node.orbitRadius)
+          .addScaledVector(orthogonal, Math.sin(node.angle) * node.orbitRadius);
+        
+        node.mesh.rotation.x += 0.015;
+        node.mesh.rotation.y += 0.02;
+
+        const scaleVal = t < 1 ? 1.0 - stageProgress * 0.35 : 0.65;
+        node.mesh.scale.set(scaleVal, scaleVal, scaleVal);
+      });
+
+      // Compute dynamic connecting lines
+      let lineIdx = 0;
+      const maxDistance = 1.35;
+      const connectionPool = []; // track active pairs for packet routing
+
+      for (let i = 0; i < techNodes.length; i++) {
+        for (let j = i + 1; j < techNodes.length; j++) {
+          if (lineIdx >= maxConnections) break;
+
+          const posA = techNodes[i].mesh.position;
+          const posB = techNodes[j].mesh.position;
+          const dist = posA.distanceTo(posB);
+
+          if (dist < maxDistance) {
+            connectionPool.push({ from: techNodes[i], to: techNodes[j] });
+            const pIdx = lineIdx * 6;
+
+            linePositions[pIdx] = posA.x;
+            linePositions[pIdx + 1] = posA.y;
+            linePositions[pIdx + 2] = posA.z;
+
+            linePositions[pIdx + 3] = posB.x;
+            linePositions[pIdx + 4] = posB.y;
+            linePositions[pIdx + 5] = posB.z;
+
+            const opacity = (1.0 - dist / maxDistance) * 0.6;
+            const colorA = techNodes[i].color.clone().multiplyScalar(opacity);
+            const colorB = techNodes[j].color.clone().multiplyScalar(opacity);
+
+            lineColors[pIdx] = colorA.r;
+            lineColors[pIdx + 1] = colorA.g;
+            lineColors[pIdx + 2] = colorA.b;
+
+            lineColors[pIdx + 3] = colorB.r;
+            lineColors[pIdx + 4] = colorB.g;
+            lineColors[pIdx + 5] = colorB.b;
+
+            lineIdx++;
+          }
+        }
+      }
+
+      lineGeometry.attributes.position.needsUpdate = true;
+      lineGeometry.attributes.color.needsUpdate = true;
+      lineGeometry.setDrawRange(0, lineIdx * 2);
+
+      // Animate flowing data packets
+      packets.forEach((packet) => {
+        packet.progress += packet.speed * (introSpinFactor * 0.25 + 0.75);
+        if (packet.progress >= 1.0) {
+          packet.progress = 0;
+          // Shift to a new connection path if available
+          if (connectionPool.length > 0) {
+            const path = connectionPool[Math.floor(Math.random() * connectionPool.length)];
+            packet.fromNode = path.from;
+            packet.toNode = path.to;
+          } else {
+            // Fallback random
+            const fromIdx = Math.floor(Math.random() * techNodes.length);
+            packet.fromNode = techNodes[fromIdx];
+            packet.toNode = techNodes[(fromIdx + 1) % techNodes.length];
+          }
+        }
+
+        if (packet.fromNode && packet.toNode) {
+          packet.mesh.position.lerpVectors(
+            packet.fromNode.mesh.position,
+            packet.toNode.mesh.position,
+            packet.progress
+          );
+          // Scale based on scroll
+          const scaleVal = t < 1 ? 1.0 - stageProgress * 0.35 : 0.65;
+          packet.mesh.scale.set(scaleVal, scaleVal, scaleVal);
+        }
+      });
+
+      // Smooth lights color transitions
       light1.color.lerp(targetColors.light1, 0.04);
       light2.color.lerp(targetColors.light2, 0.04);
       mouseLight.color.lerp(targetColors.light3, 0.04);
 
+      // Background particles morph animations
       if (frameCount % 2 === 0) {
         const partPos = particlesGeometry.attributes.position.array;
         const runColorUpdate = colorTransitionFrames > 0;
@@ -414,63 +595,54 @@ export default function ThreeHero() {
           const i3 = i * 3;
           let tx = 0, ty = 0, tz = 0;
 
-          // Target 0: Gyroscope HUD Rings (Active Orbit Rotations)
           const ringIndex = i % 3;
           const ringRadius = particleRadii[i];
-          const ringAngle = particleAngles[i] + timeFactor * (0.4 + ringIndex * 0.2);
+          const ringAngle = particleAngles[i] + timeFactor * (0.35 + ringIndex * 0.15);
           let gxGyro = 0, gyGyro = 0, gzGyro = 0;
           if (ringIndex === 0) {
             gxGyro = Math.cos(ringAngle) * ringRadius;
-            gyGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.06;
+            gyGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.05;
             gzGyro = Math.sin(ringAngle) * ringRadius;
           } else if (ringIndex === 1) {
-            gxGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.06;
+            gxGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.05;
             gyGyro = Math.cos(ringAngle) * ringRadius;
             gzGyro = Math.sin(ringAngle) * ringRadius;
           } else {
             gxGyro = Math.cos(ringAngle) * ringRadius;
             gyGyro = Math.sin(ringAngle) * ringRadius;
-            gzGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.06;
+            gzGyro = Math.sin(timeFactor + ringAngle * 2.0) * 0.05;
           }
 
-          // Target 1: Flowing Data Streams (Scrolling X coordinates)
-          const streamSpeed = 1.5;
+          const streamSpeed = 1.3;
           let gxGrid = posGrid[i3] + timeFactor * streamSpeed;
-          // Wrap X coordinates between -6 and 6
           gxGrid = ((gxGrid + 6) % 12) - 6;
           const gyGrid = posGrid[i3 + 1];
           const gzGrid = posGrid[i3 + 2];
 
-          // Target 2: Spinning Helix
-          const hAngle = posHelixAngle[i] + timeFactor * 0.9;
-          const isArmA = (i % 2 === 0);
-          const factor = isArmA ? 1 : -1;
-          const hRadius = 1.6;
+          const hAngle = posHelixAngle[i] + timeFactor * 0.8;
+          const isArm = (i % 2 === 0);
+          const factor = isArm ? 1 : -1;
+          const hRadius = 1.55;
           const gxHelix = Math.cos(hAngle) * hRadius * factor;
           const gyHelix = posHelix[i3 + 1];
           const gzHelix = Math.sin(hAngle) * hRadius * factor;
 
-          // Target 3: Scrolling Data Tunnel (Moving Z coordinates)
-          const tunnelSpeed = 2.0;
+          const tunnelSpeed = 1.8;
           const tRadius = posTunnelRadius[i];
           const tAngle = posTunnelAngle[i];
           let gzTunnel = posTunnelZ[i] - timeFactor * tunnelSpeed;
-          // Wrap Z coordinates between -5 and 5
           gzTunnel = ((gzTunnel + 5) % 10) - 5;
           const gxTunnel = Math.cos(tAngle) * tRadius;
           const gyTunnel = Math.sin(tAngle) * tRadius;
 
-          // Target 4: Falling Digital Rain
-          const rainSpeed = 3.0;
+          const rainSpeed = 2.8;
           const rRadius = posVortexRadius[i];
           const rAngle = posVortexAngle[i];
           let gyVortex = posVortexY[i] - timeFactor * rainSpeed;
-          // Wrap Y coordinates between -3.5 and 3.5
           gyVortex = ((gyVortex + 3.5) % 7.0) - 3.5;
           const gxVortex = Math.cos(rAngle) * rRadius;
           const gzVortex = Math.sin(rAngle) * rRadius;
 
-          // Segment interpolation
           if (activeStage === 0) {
             tx = gxGyro + (gxGrid - gxGyro) * stageProgress;
             ty = gyGyro + (gyGrid - gyGyro) * stageProgress;
@@ -489,18 +661,17 @@ export default function ThreeHero() {
             tz = gzTunnel + (gzVortex - gzTunnel) * stageProgress;
           }
 
-          // Apply mouse physics: repel particles nearby in world space
           if (mouse.active) {
             const dx = tx - mouseWorld.x;
             const dy = ty - mouseWorld.y;
             const dz = tz - mouseWorld.z;
             const distSq = dx * dx + dy * dy + dz * dz;
-            if (distSq < 4.0 && distSq > 0.0001) {
+            if (distSq < 3.5 && distSq > 0.0001) {
               const dist = Math.sqrt(distSq);
-              const repulsionForce = (2.0 - dist) / 2.0;
-              tx += (dx / dist) * repulsionForce * 0.9;
-              ty += (dy / dist) * repulsionForce * 0.9;
-              tz += (dz / dist) * repulsionForce * 0.9;
+              const repulsionForce = (1.85 - dist) / 1.85;
+              tx += (dx / dist) * repulsionForce * 0.75;
+              ty += (dy / dist) * repulsionForce * 0.75;
+              tz += (dz / dist) * repulsionForce * 0.75;
             }
           }
 
@@ -541,11 +712,25 @@ export default function ThreeHero() {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("scroll", onScroll);
+      
       coreGeometry.dispose();
       coreMaterial.dispose();
-      innerGeometry.dispose();
-      innerMaterial.dispose();
-      satelliteGeom.dispose();
+      haloGeometry.dispose();
+      haloMaterial.dispose();
+      
+      techGrid.dispose();
+      ringGeometries.forEach(g => g.dispose());
+      ringMaterials.forEach(m => m.dispose());
+      
+      geometries.forEach(g => g.dispose());
+      purpleNodeMaterial.dispose();
+      indigoNodeMaterial.dispose();
+      
+      lineGeometry.dispose();
+      lineMaterial.dispose();
+
+      packetGeometry.dispose();
+      packetMaterial.dispose();
 
       particlesGeometry.dispose();
       particlesMaterial.dispose();
