@@ -46,90 +46,167 @@
       "title": "oChats",
       "slug": "oChats",
       "description": "Omnichannel Customer Communication CRM SaaS allowing businesses to manage customer conversations across 14+ messaging platforms (WhatsApp, Messenger, Instagram, LINE, WeChat, Email) from a single inbox. Features visual drag-and-drop workflow builders (Drawflow), timezone-aware queue broadcasts, contact intelligence/merging, and Stripe subscription systems.",
-      "tech_stack": ["Laravel", "PHP", "MySQL", "Livewire", "Redis", "Stripe"],
-      "media": [{"url": "/uploads/ochats.png", "name": "ochats.png", "type": "image"}],
+      "tech_stack": [
+        "Laravel",
+        "PHP",
+        "MySQL",
+        "Livewire",
+        "Redis",
+        "Stripe"
+      ],
+      "media": [
+        {
+          "url": "/uploads/ochats.png",
+          "name": "ochats.png",
+          "type": "image"
+        }
+      ],
       "live_url": "https://ochats.io/",
-      "repo_url": "https://ochats.io/",
       "featured": true,
       "status": "published",
       "sort_order": 1,
       "created_at": "2026-06-09T15:32:13Z",
-      "updated_at": "2026-06-09T15:32:13Z"
+      "updated_at": "2026-06-09T15:32:13Z",
+      "organization": "Notebrains"
     },
     {
       "id": 13,
       "title": "Runway Hive",
       "slug": "runway-hive",
       "description": "Global fashion-tech portal and e-commerce marketplace connecting models, designers, and photographers. Features advanced profile management, points-based rewards economy (gamification), multi-step job board and hiring dashboards, location-aware filters, and secure payments via Stripe and PayPal.",
-      "tech_stack": ["Next.js", "React", "Node.js", "MongoDB", "Mongoose", "Stripe", "PayPal"],
-      "media": [{"url": "/uploads/runwayhive.png", "name": "runwayhive.png", "type": "image"}],
+      "tech_stack": [
+        "Next.js",
+        "React",
+        "Node.js",
+        "MongoDB",
+        "Mongoose",
+        "Stripe",
+        "PayPal"
+      ],
+      "media": [
+        {
+          "url": "/uploads/runwayhive.png",
+          "name": "runwayhive.png",
+          "type": "image"
+        }
+      ],
       "live_url": "https://runwayhive.com/",
-      "repo_url": "https://runwayhive.com",
       "featured": true,
       "status": "published",
       "sort_order": 2,
       "created_at": "2026-06-09T15:32:13Z",
-      "updated_at": "2026-06-09T15:32:13Z"
+      "updated_at": "2026-06-09T15:32:13Z",
+      "organization": "Inforoot Solution"
     },
     {
       "id": 14,
       "title": "Maneuver",
       "slug": "maneuver",
       "description": "On-demand courier delivery shipment platform featuring multi-stop route optimization, real-time GPS tracking (Socket.IO + Redis), intelligent proximity driver matching, dynamic pricing, and Stripe Identity document verification.",
-      "tech_stack": ["Node.js", "Express", "MySQL", "Sequelize", "Socket.io", "Redis", "Stripe Connect"],
-      "media": [{"url": "/uploads/maneuver.png", "name": "maneuver.png", "type": "image"}],
+      "tech_stack": [
+        "Node.js",
+        "Express",
+        "MySQL",
+        "Sequelize",
+        "Socket.io",
+        "Redis",
+        "Stripe Connect"
+      ],
+      "media": [
+        {
+          "url": "/uploads/maneuver.png",
+          "name": "maneuver.png",
+          "type": "image"
+        }
+      ],
       "live_url": "https://admin.maneuver.live/admin/login",
-      "repo_url": "https://admin.maneuver.live/admin/login",
       "featured": true,
       "status": "published",
       "sort_order": 3,
       "created_at": "2026-06-09T15:32:13Z",
-      "updated_at": "2026-06-09T15:32:13Z"
+      "updated_at": "2026-06-09T15:32:13Z",
+      "organization": "Notebrains"
     },
     {
       "id": 15,
       "title": "ACC – SaaS Learning Management System",
       "slug": "acc-lms",
       "description": "A SaaS-based education management ecosystem with Web app, mobile app, and admin portal enabling schools to manage students, courses, batches, attendance, exams, assignments, fees, results, and notifications.",
-      "tech_stack": ["Laravel", "Filament", "Livewire", "MySQL", "Bootstrap"],
-      "media": [{"url": "/uploads/acc_lms.png", "name": "acc_lms.png", "type": "image"}],
+      "tech_stack": [
+        "Laravel",
+        "Filament",
+        "Livewire",
+        "MySQL",
+        "Bootstrap"
+      ],
+      "media": [
+        {
+          "url": "/uploads/acc_lms.png",
+          "name": "acc_lms.png",
+          "type": "image"
+        }
+      ],
       "live_url": "https://admin.ayanchakrabortyclasses.co.in/admin/login",
-      "repo_url": "https://admin.ayanchakrabortyclasses.co.in/admin/login",
       "featured": true,
       "status": "published",
       "sort_order": 4,
       "created_at": "2026-06-09T15:32:13Z",
-      "updated_at": "2026-06-09T15:32:13Z"
+      "updated_at": "2026-06-09T15:32:13Z",
+      "organization": "Freelance"
     },
     {
       "id": 16,
       "title": "Ayan Chakraborty Classes LMS",
       "slug": "ayan-classes",
       "description": "Coaching institute Learning Management System featuring custom Zoom API live class scheduling, media video hosting on AWS S3 & Cloudflare R2, SMS alerts via Vonage, dynamic PDF assignments, and school reporting tools.",
-      "tech_stack": ["React Js", "Axios", "Redux Toolkit Query", "AWS S3", "Cloudflare R2"],
-      "media": [{"url": "/uploads/ayanclasses.png", "name": "ayanclasses.png", "type": "image"}],
+      "tech_stack": [
+        "React Js",
+        "Axios",
+        "Redux Toolkit Query",
+        "AWS S3",
+        "Cloudflare R2"
+      ],
+      "media": [
+        {
+          "url": "/uploads/ayanclasses.png",
+          "name": "ayanclasses.png",
+          "type": "image"
+        }
+      ],
       "live_url": "https://admin.ayanchakrabortyclasses.co.in/admin/login",
-      "repo_url": "#",
       "featured": true,
       "status": "published",
       "sort_order": 5,
       "created_at": "2026-06-09T15:32:13Z",
-      "updated_at": "2026-06-09T15:32:13Z"
+      "updated_at": "2026-06-09T15:32:13Z",
+      "organization": "Freelance"
     },
     {
       "id": 17,
       "title": "Leroi Lead Operations Platform",
       "slug": "leroi",
       "description": "Enterprise lead and operations management platform streamlining lead tracking, workflow automation, customer engagement, visual pipeline dashboards, team communication, and automated sales reporting.",
-      "tech_stack": ["Laravel", "Livewire", "PHP", "Tailwind CSS", "MySQL"],
-      "media": [{"url": "/uploads/leroi.png", "name": "leroi.png", "type": "image"}],
+      "tech_stack": [
+        "Laravel",
+        "Livewire",
+        "PHP",
+        "Tailwind CSS",
+        "MySQL"
+      ],
+      "media": [
+        {
+          "url": "/uploads/leroi.png",
+          "name": "leroi.png",
+          "type": "image"
+        }
+      ],
       "live_url": "https://leroi.libertyhomeguard.com/",
-      "repo_url": "https://leroi.libertyhomeguard.com/",
       "featured": true,
       "status": "published",
       "sort_order": 6,
       "created_at": "2026-06-09T15:32:13Z",
-      "updated_at": "2026-06-09T15:32:13Z"
+      "updated_at": "2026-06-09T15:32:13Z",
+      "organization": "Sundew"
     }
   ],
   "certificates": [

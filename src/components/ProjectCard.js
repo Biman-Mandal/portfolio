@@ -19,6 +19,11 @@ export default function ProjectCard({ item, delayClass }) {
       </div>
       <div className="card-body">
         <h3 className="card-title">{item.title}</h3>
+        {item.organization && (
+          <p style={{ fontSize: '13px', color: 'var(--accent-2)', margin: '0 0 8px 0', fontWeight: '600' }}>
+            {item.organization}
+          </p>
+        )}
         <p className="card-desc">{item.description}</p>
         {item.tech_stack?.length ? (
           <div className="card-tags" style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "8px 0 14px" }}>
@@ -44,11 +49,6 @@ export default function ProjectCard({ item, delayClass }) {
           {item.link && (
             <a className="btn primary" href={item.link} target="_blank" rel="noreferrer">
               Demo
-            </a>
-          )}
-          {item.github && (
-            <a className="btn" href={item.github} target="_blank" rel="noreferrer">
-              GitHub
             </a>
           )}
         </div>
