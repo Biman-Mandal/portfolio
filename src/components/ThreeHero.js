@@ -15,9 +15,8 @@ export default function ThreeHero() {
 
   useEffect(() => {
     const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
-    if (isMobile) {
-      return;
-    }
+    // The early return for mobile devices has been removed so the animation runs on all screen sizes
+    
     const mount = mountRef.current;
     if (!mount) return;
 

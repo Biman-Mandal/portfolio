@@ -25,11 +25,12 @@ export default function ContactSection({ contact }) {
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
+      phone: formData.get("phone"),
       message: formData.get("message")
     };
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/bimanm193@gmail.com", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +46,7 @@ export default function ContactSection({ contact }) {
         setFormStatus("error");
       }
     } catch (err) {
-      console.error("FormSubmit Error:", err);
+      console.error("Contact API Error:", err);
       setFormStatus("error");
     }
   };
@@ -81,7 +82,7 @@ export default function ContactSection({ contact }) {
       <div className="section-header reveal" style={{ textAlign: "center", marginBottom: "3rem" }}>
         <div style={{ margin: "0 auto" }}>
           <h2 style={{ textAlign: "center" }}>{contact.title || "Contact"}</h2>
-          <p className="subtitle" style={{ color: "var(--muted)", marginTop: "0.5rem" }}>Ready for freelance work, collaborations, and full‑stack product builds.</p>
+          <p className="subtitle" style={{ color: "var(--muted)", marginTop: "0.5rem" }}>Ready for freelance work and collaborations.</p>
         </div>
       </div>
       
@@ -281,6 +282,10 @@ export default function ContactSection({ contact }) {
             <label htmlFor="email" style={{ display: "block", marginBottom: ".5rem", fontSize: "14px", fontWeight: 500, color: "var(--muted)" }}>Email</label>
             <input type="email" id="email" name="email" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "0.5px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none" }} />
           </div>
+          <div className="form-group" style={{ marginBottom: "1.25rem" }}>
+            <label htmlFor="phone" style={{ display: "block", marginBottom: ".5rem", fontSize: "14px", fontWeight: 500, color: "var(--muted)" }}>Phone (Optional)</label>
+            <input type="tel" id="phone" name="phone" style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "0.5px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none" }} />
+          </div>
           <div className="form-group" style={{ marginBottom: "1.5rem" }}>
             <label htmlFor="message" style={{ display: "block", marginBottom: ".5rem", fontSize: "14px", fontWeight: 500, color: "var(--muted)" }}>Message</label>
             <textarea id="message" name="message" rows="10" required style={{ width: "100%", padding: ".75rem", borderRadius: "8px", border: "0.5px solid var(--line)", background: "var(--bg)", color: "var(--ink)", outline: "none", resize: "vertical" }}></textarea>
@@ -296,7 +301,7 @@ export default function ContactSection({ contact }) {
           )}
           {formStatus === "success" && (
             <p style={{ marginTop: "12px", fontSize: "14px", color: "#10b981", fontWeight: 500, textAlign: "center" }}>
-              Message sent successfully! FormSubmit will send an activation email to confirm this endpoint on first use.
+              Message sent successfully! I will get back to you soon.
             </p>
           )}
           {formStatus === "error" && (

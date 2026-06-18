@@ -31,6 +31,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -38,6 +39,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
 }
 
 /* Global Transitions for Premium Feel */
@@ -538,8 +540,6 @@ p {
   gap: 24px;
   padding-bottom: 24px;
   padding-top: 12px; /* Prevent hover scaling from being clipped */
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -564,7 +564,6 @@ p {
 
 .projects-scroll .content-card {
   flex: 0 0 380px;
-  scroll-snap-align: start;
 }
 
 @media (max-width: 768px) {
@@ -577,16 +576,20 @@ p {
   }
 }
 
-.scroll-controls {
+.projects-carousel-wrapper {
+  position: relative;
   display: flex;
-  gap: 8px;
-  align-self: flex-end;
-  margin-bottom: 6px;
+  align-items: center;
+  margin: 0 -22px; /* Pull out to allow buttons to be on the edges */
 }
 
-.scroll-btn {
-  width: 44px;
-  height: 44px;
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: 1px solid var(--line);
   background: var(--panel-strong);
@@ -596,23 +599,34 @@ p {
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.scroll-btn:hover {
-  background: var(--accent);
+.carousel-btn:hover {
+  background: var(--accent-2);
   color: #ffffff;
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(15, 118, 110, 0.2);
+  border-color: var(--accent-2);
+  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.25);
+  transform: translateY(-50%) scale(1.05);
 }
 
-.scroll-btn:active {
-  transform: translateY(0);
+.carousel-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-btn.left {
+  left: 0;
+}
+
+.carousel-btn.right {
+  right: 0;
 }
 
 @media (max-width: 768px) {
-  .scroll-controls {
+  .projects-carousel-wrapper {
+    margin: 0;
+  }
+  .carousel-btn {
     display: none;
   }
 }

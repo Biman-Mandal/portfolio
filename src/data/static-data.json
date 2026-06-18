@@ -43,8 +43,8 @@
   "projects": [
     {
       "id": 12,
-      "title": "OChats",
-      "slug": "ochats",
+      "title": "oChats",
+      "slug": "oChats",
       "description": "Omnichannel Customer Communication CRM SaaS allowing businesses to manage customer conversations across 14+ messaging platforms (WhatsApp, Messenger, Instagram, LINE, WeChat, Email) from a single inbox. Features visual drag-and-drop workflow builders (Drawflow), timezone-aware queue broadcasts, contact intelligence/merging, and Stripe subscription systems.",
       "tech_stack": ["Laravel", "PHP", "MySQL", "Livewire", "Redis", "Stripe"],
       "media": [{"url": "/uploads/ochats.png", "name": "ochats.png", "type": "image"}],

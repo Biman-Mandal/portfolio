@@ -17,7 +17,7 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: "Professional Full Stack Developer Portfolio | Next.js & Three.js",
+  title: "Professional Full Stack Developer Portfolio",
   description: "Browse full stack web development projects, credentials, and courses. Powered by an interactive 3D hero scene and local JSON database.",
   robots: "index, follow"
 };
@@ -77,7 +77,6 @@ export default async function Home() {
               <span>Next.js</span>
               <span>Node.js</span>
               <span>MySQL</span>
-              <span>Three.js</span>
               <span>REST APIs</span>
               <span>Laravel</span>
               <span>MongoDB</span>
@@ -86,12 +85,10 @@ export default async function Home() {
               <span>Git</span>
               <span>Docker</span>
               <span>Project Management</span>
-              <span>Sass</span>
-              <span>Linux</span>
               <span>Postman</span>
               <span>Tailwind CSS</span>
-              <span>CI/CD</span>
-              <span>Testing</span>
+              <span>Bootstrap</span>
+              <span>PostgreSQL</span>
             </div>
           </div>
           <InteractiveCodeWindow>
@@ -105,9 +102,10 @@ export default async function Home() {
               <code>
                 <span className="code-key">const</span> developer = {"{"}
                 {"\n"}  role: <span className="code-string">"Full Stack Developer"</span>,
-                {"\n"}  frontend: [<span className="code-string">"Next.js"</span>, <span className="code-string">"Three.js"</span>],
-                {"\n"}  backend: [<span className="code-string">"Node.js"</span>, <span className="code-string">"MySQL"</span>],
-                {"\n"}  build: <span className="code-fn">shipCleanProducts</span>()
+                {"\n"}  backend: [<span className="code-string">"Laravel/PHP"</span>, <span className="code-string">"Node.js"</span>],
+                {"\n"}  database: [<span className="code-string">"MySQL"</span>, <span className="code-string">"MongoDB"</span>],
+                {"\n"}  frontend: [<span className="code-string">"Next.js"</span>, <span className="code-string">"React.js"</span>],
+                {"\n"}  build: <span className="code-fn">shipScalableProducts</span>()
                 {"\n"}
                 {"};"}
               </code>
@@ -116,7 +114,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <ProjectsSection id="projects" title="Projects" kicker="Selected full stack builds with uploadable images, videos, links, and descriptions." items={byType(content, "project")} />
+      <ProjectsSection id="projects" title="Projects" kicker="Selected projects built with modern technologies." items={byType(content, "project")} />
       <EducationSection id="education" title="Career" kicker="A timeline of my professional software engineering experience" items={byType(content, "education")} />
 
       {about ? (
