@@ -48,36 +48,36 @@ export default function ThreeHero() {
     };
 
     // 2. Central Glowing Core & Halo
-    const coreGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+    const coreGeometry = new THREE.SphereGeometry(0.12, 16, 16);
     const coreMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
+      color: 0x818cf8,
       transparent: true,
-      opacity: 0.95
+      opacity: 0.6
     });
     const glowingCore = new THREE.Mesh(coreGeometry, coreMaterial);
     group.add(glowingCore);
 
-    const haloGeometry = new THREE.SphereGeometry(0.32, 16, 16);
+    const haloGeometry = new THREE.SphereGeometry(0.3, 16, 16);
     const haloMaterial = new THREE.MeshBasicMaterial({
-      color: 0x8b5cf6,
+      color: 0x6366f1,
       transparent: true,
-      opacity: 0.25,
+      opacity: 0.12,
       blending: THREE.AdditiveBlending
     });
     const glowingHalo = new THREE.Mesh(haloGeometry, haloMaterial);
     group.add(glowingHalo);
 
     // 3. Holographic Tech Grid Floor (y = -1.6)
-    const techGrid = new THREE.GridHelper(8, 16, 0x8b5cf6, 0x334155);
+    const techGrid = new THREE.GridHelper(8, 16, 0x6366f1, 0x1e293b);
     techGrid.position.y = -1.6;
     if (Array.isArray(techGrid.material)) {
       techGrid.material.forEach(m => {
         m.transparent = true;
-        m.opacity = 0.18;
+        m.opacity = 0.08;
       });
     } else {
       techGrid.material.transparent = true;
-      techGrid.material.opacity = 0.18;
+      techGrid.material.opacity = 0.08;
     }
     group.add(techGrid);
 
@@ -89,9 +89,9 @@ export default function ThreeHero() {
       const r = 1.1 + i * 0.55;
       const ringGeom = new THREE.RingGeometry(r, r + 0.006, 48);
       const ringMat = new THREE.MeshBasicMaterial({
-        color: 0x4f46e5,
+        color: 0x6366f1,
         transparent: true,
-        opacity: 0.16,
+        opacity: 0.08,
         side: THREE.DoubleSide
       });
       const ring = new THREE.Mesh(ringGeom, ringMat);
@@ -115,19 +115,19 @@ export default function ThreeHero() {
 
     const purpleNodeMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x8b5cf6,
-      roughness: 0.1,
-      metalness: 0.9,
-      clearcoat: 1.0,
+      roughness: 0.2,
+      metalness: 0.8,
+      clearcoat: 0.5,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.5,
       emissive: 0x8b5cf6,
-      emissiveIntensity: 0.35
+      emissiveIntensity: 0.15
     });
 
     const indigoNodeMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x4f46e5,
-      roughness: 0.1,
-      metalness: 0.9,
+      color: 0x6366f1,
+      roughness: 0.2,
+      metalness: 0.8,
       clearcoat: 1.0,
       transparent: true,
       opacity: 0.85,

@@ -86,8 +86,8 @@ export default function EducationSection({ id, title, kicker }) {
         <div>
           <h2>{title}</h2>
           <p>{kicker}</p>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(139, 92, 246, 0.08)', border: '0.5px solid var(--line)', padding: '6px 12px', borderRadius: '20px', marginTop: '12px', fontSize: '13.5px', color: 'var(--muted)', fontWeight: 600 }}>
-            <span style={{ color: 'var(--accent-2)', fontSize: '10px' }}>●</span> Total Professional Experience: <span style={{ color: '#ffffff', marginLeft: '4px' }}>{totalExperienceText}</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(99, 102, 241, 0.08)', border: '1px solid rgba(99, 102, 241, 0.25)', padding: '6px 14px', borderRadius: '99px', marginTop: '16px', fontSize: '13.5px', color: 'var(--muted)', fontWeight: 600 }}>
+            <span style={{ color: '#818cf8', fontSize: '10px' }}>●</span> Total Professional Experience: <span style={{ color: 'var(--ink)', marginLeft: '4px' }}>{totalExperienceText}</span>
           </div>
         </div>
       </div>
@@ -108,16 +108,27 @@ export default function EducationSection({ id, title, kicker }) {
                     flexWrap: 'wrap',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginBottom: 8,
+                    marginBottom: 10,
                     gap: 8,
                   }}
                 >
-                  <span className="timeline-tag exp">Experience</span>
-                  <span className="timeline-duration" style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)' }}>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    padding: '3px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(99, 102, 241, 0.12)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    color: '#a5b4fc'
+                  }}>
+                    Experience
+                  </span>
+                  <span className="timeline-duration" style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)' }}>
                     {item.period}
                   </span>
                 </div>
-                <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: 4, color: 'var(--ink)' }}>
                   {item.title}
                   {item.company && (
                     <>
@@ -129,9 +140,8 @@ export default function EducationSection({ id, title, kicker }) {
                           rel="noopener noreferrer" 
                           className="company-link"
                           style={{ 
-                            color: "#c4b5fd", 
-                            textDecoration: "underline",
-                            textUnderlineOffset: "4px"
+                            color: "#818cf8", 
+                            fontWeight: 600
                           }}
                         >
                           {item.company}
@@ -143,11 +153,11 @@ export default function EducationSection({ id, title, kicker }) {
                   )}
                 </h3>
                 {item.location && (
-                  <h4 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--muted)', marginBottom: 8 }}>
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--muted)', marginBottom: 8 }}>
                     {item.location}
                   </h4>
                 )}
-                {item.description && <p className="timeline-desc" style={{ marginBottom: 0 }}>{item.description}</p>}
+                {item.description && <p className="timeline-desc" style={{ marginBottom: 0, fontSize: '13.5px', color: 'var(--muted-dim)' }}>{item.description}</p>}
               </div>
             </div>
           ))}

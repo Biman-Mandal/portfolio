@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { CheckCircle2, Award, BookOpen } from "lucide-react";
 
 export default function AboutSection({ id, title, description, certificates = [], courses = [] }) {
   const imageRef = useRef(null);
@@ -17,8 +18,8 @@ export default function AboutSection({ id, title, description, certificates = []
     const xc = rect.width / 2;
     const yc = rect.height / 2;
 
-    const angleX = (yc - y) / 10;
-    const angleY = (x - xc) / 10;
+    const angleX = (yc - y) / 14;
+    const angleY = (x - xc) / 14;
 
     setTilt({ x: angleX, y: angleY });
   };
@@ -28,23 +29,21 @@ export default function AboutSection({ id, title, description, certificates = []
   };
 
   const paragraphs = [
-    "With 4+ years of experience in software development, I specialize in building scalable SaaS platforms, enterprise applications, CRM systems, LMS solutions, social networking platforms, and real-time web applications. My expertise spans the entire development lifecycle—from database design and backend architecture to API development and modern frontend implementation.",
-    "I have worked extensively with Laravel, PHP, Node.js, React.js, Next.js, MongoDB, and MySQL, delivering solutions that support thousands of users across industries such as Education, Logistics, Customer Engagement, Social Networking, and Business Automation.",
-    "Throughout my career, I have contributed to the development of multi-tenant SaaS products, omnichannel communication platforms, real-time tracking systems, workflow automation tools, and customer-facing applications. I enjoy transforming complex business requirements into scalable, maintainable, and high-performing software solutions.",
-    "I am passionate about building products that solve real-world problems, improve user experiences, and create measurable business impact."
+    "With 4+ years of hands-on software development experience, I specialize in architecting scalable SaaS platforms, multi-tenant CRM systems, LMS applications, and high-throughput real-time APIs. My core expertise covers full-stack web engineering—from database modeling and backend microservices to responsive frontend interfaces.",
+    "I work extensively with Node.js (Express), Laravel, React, Next.js, MySQL, and MongoDB, engineering systems that handle thousands of active users across logistics, education, social tech, and workflow automation.",
+    "Passionate about clean code architecture, performance optimization, and transformation of complex enterprise requirements into seamless product experiences."
   ];
 
   const highlights = [
-    "Developed and maintained SaaS, CRM, LMS, and enterprise platforms",
-    "Designed scalable database architectures and RESTful APIs",
-    "Built real-time applications using Socket.IO and event-driven systems",
-    "Integrated payment gateways including Stripe, Paypal & Razorpay",
-    "Led development teams and collaborated directly with clients",
-    "Delivered projects from concept to production deployment",
-    "Experienced in performance optimization, system design, and backend engineering"
+    "SaaS & Multi-tenant Architecture Specialist",
+    "Scalable Database Design & RESTful APIs",
+    "Real-time Systems with Socket.IO & Event Queues",
+    "Payment Systems (Stripe, PayPal, Razorpay)",
+    "Lead Backend Engineering & Agile Collaboration",
+    "Production Performance Optimization & Security"
   ];
 
-  const topSkills = ["Laravel", "MySQL", "MongoDB", "Node.js", "Next.js"];
+  const topSkills = ["Node.js", "Laravel", "PHP", "Express.js", "Next.js", "React", "MongoDB", "MySQL", "Docker", "Socket.IO"];
 
   return (
     <section id={id} className="section about-section">
@@ -60,62 +59,71 @@ export default function AboutSection({ id, title, description, certificates = []
             transformStyle: "preserve-3d"
           }}
         >
-          <div className="about-image-inner" style={{ transform: "translateZ(30px)" }}>
+          <div className="about-image-inner">
             <img src="/developer.png" alt="Developer photo" className="about-photo" />
             <div className="about-photo-overlay" />
           </div>
         </div>
 
-        <div className="about-content" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          <div className="about-header" style={{ marginBottom: "0.5rem" }}>
+        <div className="about-content">
+          <div className="about-header">
             <span className="eyebrow">A Bit About Me</span>
             <h2>{title}</h2>
           </div>
           
-          <h3 style={{ fontSize: "1.35rem", fontWeight: 700, color: "var(--accent-2)", marginBottom: "0.25rem", lineHeight: "1.4" }}>
-            🚀 Full Stack Developer | SaaS, CRM & Enterprise Application Specialist
+          <h3 style={{ fontSize: "1.25rem", fontWeight: 700, color: "#818cf8", margin: 0, lineHeight: "1.4" }}>
+            Full Stack Developer | SaaS, CRM & Enterprise Application Specialist
           </h3>
 
           <div className="about-copy-container">
             {paragraphs.map((p, idx) => (
-              <p key={idx} className="about-copy" style={{ marginBottom: "1rem", lineHeight: "1.6" }}>{p}</p>
+              <p key={idx} className="about-copy" style={{ marginBottom: "1rem" }}>{p}</p>
             ))}
           </div>
 
-          <div style={{ marginTop: "1.25rem" }}>
-            <h4 style={{ fontSize: "1.15rem", fontWeight: 700, marginBottom: "0.75rem", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>💡</span> Key Highlights
+          <div style={{ marginTop: "1rem" }}>
+            <h4 style={{ fontSize: "1.05rem", fontWeight: 700, marginBottom: "1rem", color: "var(--ink)", display: "flex", alignItems: "center", gap: "8px" }}>
+              Key Technical Highlights
             </h4>
-            <ul style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "0.75rem", padding: 0, listStyle: "none", margin: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "10px" }}>
               {highlights.map((h, idx) => (
-                <li key={idx} style={{ display: "flex", gap: "8px", fontSize: "0.95rem", color: "var(--muted)", lineHeight: "1.4" }}>
-                  <span style={{ color: "var(--accent-2)", fontWeight: "bold" }}>•</span>
+                <div key={idx} style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "10px 14px",
+                  borderRadius: "10px",
+                  background: "rgba(19, 27, 46, 0.5)",
+                  border: "1px solid var(--line)",
+                  fontSize: "13.5px",
+                  color: "var(--muted)"
+                }}>
+                  <CheckCircle2 size={16} style={{ color: "#6366f1", flexShrink: 0 }} />
                   <span>{h}</span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
           <div style={{ marginTop: "1.25rem" }}>
-            <h4 style={{ fontSize: "1.15rem", fontWeight: 700, marginBottom: "0.75rem", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>🛠️</span> Top Skills
+            <h4 style={{ fontSize: "1.05rem", fontWeight: 700, marginBottom: "0.75rem", color: "var(--ink)" }}>
+              Core Technical Stack
             </h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
               {topSkills.map((skill, idx) => (
-                <div key={idx} className="skill-card-hover" style={{
-                  background: "var(--panel-strong)",
-                  border: "0.5px solid var(--line)",
-                  boxShadow: "var(--card-shadow)",
-                  padding: "10px 18px",
-                  borderRadius: "10px",
-                  fontWeight: 700,
-                  fontSize: "0.95rem",
-                  color: "#ffffff",
+                <div key={idx} style={{
+                  background: "rgba(99, 102, 241, 0.08)",
+                  border: "1px solid rgba(99, 102, 241, 0.2)",
+                  padding: "6px 14px",
+                  borderRadius: "8px",
+                  fontWeight: 600,
+                  fontSize: "12.5px",
+                  color: "#a5b4fc",
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px"
+                  gap: "6px"
                 }}>
-                  <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: "var(--accent-2)" }} />
+                  <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: "#6366f1" }} />
                   {skill}
                 </div>
               ))}
@@ -125,21 +133,29 @@ export default function AboutSection({ id, title, description, certificates = []
       </div>
 
       {(certificates.length || courses.length) ? (
-        <div className="about-credentials reveal" style={{ marginTop: '56px', borderTop: '0.5px solid var(--line)', paddingTop: '40px' }}>
-          <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '24px', background: 'linear-gradient(135deg, var(--ink) 50%, var(--accent) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            Certifications & Continuous Learning
-          </h3>
+        <div className="about-credentials reveal" style={{ marginTop: '72px', borderTop: '1px solid var(--line)', paddingTop: '48px', maxWidth: '1140px', margin: '72px auto 0' }}>
+          <div style={{ marginBottom: '28px' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'var(--ink)' }}>
+              Certifications & Professional Learning
+            </h3>
+            <p style={{ color: 'var(--muted)', fontSize: '14.5px', marginTop: '4px' }}>
+              Continuous skill acquisition and verified technical credentials.
+            </p>
+          </div>
           
           <div className="credentials-scroll">
             {/* Render Certificates */}
             {certificates.map((cert) => (
               <div key={cert.id} className="credential-card">
-                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)', background: 'rgba(139, 92, 246, 0.06)', padding: '3px 8px', borderRadius: '6px', display: 'inline-block', marginBottom: '12px', border: '0.5px solid var(--line)' }}>
-                  Certificate
-                </span>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--ink)' }}>{cert.title}</h4>
-                <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--accent)', marginBottom: '8px' }}>{cert.issuer}</p>
-                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '1.5', marginBottom: '12px' }}>{cert.description}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                  <Award size={16} style={{ color: '#818cf8' }} />
+                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#818cf8', letterSpacing: '0.05em' }}>
+                    Verified Certificate
+                  </span>
+                </div>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--ink)' }}>{cert.title}</h4>
+                <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--muted)', marginBottom: '8px' }}>{cert.issuer}</p>
+                <p style={{ fontSize: '13px', color: 'var(--muted-dim)', lineHeight: '1.5', marginBottom: '14px' }}>{cert.description}</p>
                 {cert.link && cert.link !== '#' && (
                   <a href={cert.link} target="_blank" rel="noreferrer" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--accent)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                     Verify Credential &rarr;
@@ -151,15 +167,18 @@ export default function AboutSection({ id, title, description, certificates = []
             {/* Render Courses */}
             {courses.map((course) => (
               <div key={course.id} className="credential-card">
-                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)', background: 'rgba(139, 92, 246, 0.06)', padding: '3px 8px', borderRadius: '6px', display: 'inline-block', marginBottom: '12px', border: '0.5px solid var(--line)' }}>
-                  Course / Skill
-                </span>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--ink)' }}>{course.title}</h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                  <BookOpen size={16} style={{ color: '#34d399' }} />
+                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#34d399', letterSpacing: '0.05em' }}>
+                    Skill Course
+                  </span>
+                </div>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--ink)' }}>{course.title}</h4>
                 <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--muted)', marginBottom: '8px' }}>{course.provider}</p>
-                <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '1.5', marginBottom: '12px' }}>{course.description}</p>
+                <p style={{ fontSize: '13px', color: 'var(--muted-dim)', lineHeight: '1.5', marginBottom: '14px' }}>{course.description}</p>
                 {course.link && course.link !== '#' && (
                   <a href={course.link} target="_blank" rel="noreferrer" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--accent)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    Course Link &rarr;
+                    Course Overview &rarr;
                   </a>
                 )}
               </div>

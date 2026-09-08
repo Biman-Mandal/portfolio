@@ -46,13 +46,13 @@ export default async function Home() {
   return (
     <main className="site-shell">
       <nav className="top-nav">
-        <a className="brand" href="#home" id="brand-logo-link" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <img src="/logo.jpg" alt="BM Logo" style={{ height: "30px", width: "30px", borderRadius: "6px", objectFit: "cover" }} />
+        <a className="brand" href="#home" id="brand-logo-link">
+          <img src="/logo.jpg" alt="BM Logo" style={{ height: "32px", width: "32px", borderRadius: "8px", objectFit: "cover" }} />
           <span>Biman Mandal</span>
         </a>
         <div className="nav-links">
           <a href="#projects" id="nav-projects-link">Projects</a>
-          <a href="#education" id="nav-edu-link">Career</a>
+          <a href="#education" id="nav-edu-link">Experience</a>
           <a href="#about" id="nav-about-link">About</a>
           <a href="#contact" id="nav-contact-link">Contact</a>
         </div>
@@ -61,51 +61,63 @@ export default async function Home() {
       <section id="home" className="hero">
         <div className="hero-layout">
           <div className="hero-content">
-            <span className="eyebrow reveal">Senior Software Developer | Full Stack Engineer </span>
+            <span className="eyebrow reveal">Senior Software Developer | Full Stack Engineer</span>
             <h1 className="reveal reveal-delay-1">{intro.title}</h1>
             <p className="reveal reveal-delay-2">{intro.description}</p>
+            
             <div className="hero-actions reveal reveal-delay-3">
               <a className="btn primary" href="#projects">
-                View Projects
+                View Projects &rarr;
               </a>
               <a className="btn" href="#contact">
-                Contact
+                Get In Touch
               </a>
             </div>
-            <div className="stack-strip reveal reveal-delay-4" aria-label="Developer stack">
-              <span>React</span>
-              <span>Next.js</span>
-              <span>Node.js</span>
-              <span>MySQL</span>
-              <span>REST APIs</span>
-              <span>Laravel</span>
+
+            <div className="hero-stats reveal reveal-delay-3">
+              <div className="stat-item">
+                <span className="stat-num">4+</span>
+                <span className="stat-label">Years Exp.</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-num">15+</span>
+                <span className="stat-label">SaaS & Products</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-num">100%</span>
+                <span className="stat-label">Production Delivery</span>
+              </div>
+            </div>
+
+            <div className="stack-strip reveal reveal-delay-4" aria-label="Core developer stack">
+              <span>Node.js / Express</span>
+              <span>Laravel / PHP</span>
+              <span>Next.js / React</span>
               <span>MongoDB</span>
-              <span>PHP</span>
-              <span>Express.js</span>
-              <span>Git</span>
+              <span>MySQL</span>
+              <span>Socket.IO</span>
+              <span>REST APIs</span>
               <span>Docker</span>
-              <span>Project Management</span>
-              <span>Postman</span>
-              <span>Tailwind CSS</span>
-              <span>Bootstrap</span>
-              <span>PostgreSQL</span>
             </div>
           </div>
+
           <InteractiveCodeWindow>
             <div className="code-titlebar">
               <span className="dot" />
               <span className="dot" />
               <span className="dot" />
-              <span>portfolio.config.js</span>
+              <span>portfolio.config.ts</span>
             </div>
             <pre className="code-block">
               <code>
-                <span className="code-key">const</span> developer = {"{"}
-                {"\n"}  role: <span className="code-string">"Full Stack Developer"</span>,
-                {"\n"}  backend: [<span className="code-string">"Laravel/PHP"</span>, <span className="code-string">"Node.js"</span>],
-                {"\n"}  database: [<span className="code-string">"MySQL"</span>, <span className="code-string">"MongoDB"</span>],
-                {"\n"}  frontend: [<span className="code-string">"Next.js"</span>, <span className="code-string">"React.js"</span>],
-                {"\n"}  build: <span className="code-fn">shipScalableProducts</span>()
+                <span className="code-key">const</span> engineer = {"{"}
+                {"\n"}  name: <span className="code-string">"Biman Mandal"</span>,
+                {"\n"}  role: <span className="code-string">"Lead Backend & Full Stack"</span>,
+                {"\n"}  architecture: [<span className="code-string">"Microservices"</span>, <span className="code-string">"SaaS"</span>],
+                {"\n"}  backend: [<span className="code-string">"Laravel/PHP"</span>, <span className="code-string">"Node.js/Express"</span>],
+                {"\n"}  databases: [<span className="code-string">"MySQL"</span>, <span className="code-string">"MongoDB"</span>],
+                {"\n"}  frontend: [<span className="code-string">"Next.js"</span>, <span className="code-string">"React"</span>],
+                {"\n"}  status: <span className="code-fn">availableForImpact</span>()
                 {"\n"}
                 {"};"}
               </code>
@@ -114,15 +126,17 @@ export default async function Home() {
         </div>
       </section>
 
-      <ProjectsSection id="projects" title="Projects" kicker="Selected projects built with modern technologies." items={byType(content, "project")} />
-      <EducationSection id="education" title="Career" kicker="A timeline of my professional software engineering experience" items={byType(content, "education")} />
+      <ProjectsSection id="projects" title="Featured Projects" kicker="Scalable SaaS platforms, real-time logistics systems, and enterprise web solutions." items={byType(content, "project")} />
+      <EducationSection id="education" title="Career Experience" kicker="A timeline of professional software engineering roles and technical achievements." items={byType(content, "education")} />
 
       {about ? (
         <AboutSection id="about" title={about.title} description={about.description} certificates={byType(content, "certificate")} courses={byType(content, "course")} />
       ) : null}
 
       <ContactSection contact={contact} />
-      <footer className="footer">Built with Next.js, Three.js, and Local JSON Database.</footer>
+      <footer className="footer">
+        © {new Date().getFullYear()} Biman Mandal. Engineered with Next.js, Three.js & Modern UI Design.
+      </footer>
     </main>
   );
 }
